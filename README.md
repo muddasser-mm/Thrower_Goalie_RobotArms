@@ -1,5 +1,7 @@
-# robotics_dev
-Practical Course Robotics
-Team:
-Mohammed Muddasser
-Raphael Brösamle
+# Practical Course Robotics
+
+### Repository - robotics_dev
+
+## Team:
+* Mohammed Muddasser
+* Raphael Brösamle
