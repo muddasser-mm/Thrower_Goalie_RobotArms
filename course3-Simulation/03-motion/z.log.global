@@ -1,0 +1,179 @@
+** compiled at:     May  5 2020 01:54:00
+** execution start: 1970-01-01_01:00:00.000000
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/course3-Simulation/03-motion'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path '../../scenarios' from '/home/muddasser/git/dev/robotics-course/course3-Simulation/03-motion'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'pandasTable.g'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'panda_moveGripper.g'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path '../rai-robotModels/panda' from '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'panda_clean.g'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'gripper.g'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'panda_moveGripper.g'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path '../rai-robotModels/panda' from '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'panda_clean.g'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'gripper.g'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/scenarios'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link0.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link1.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link2.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link3.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link4.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link5.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link6.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link7.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link0.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link1.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link2.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link3.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link4.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link5.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link6.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_file:1142(3) entering path 'meshes/visual' from '/home/muddasser/git/dev/robotics-course/rai-robotModels/panda'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:getIs:1171(3) opening input file 'link7.ply'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.cpp:cd_start:1134(3) entering path '/home/muddasser/git/dev/robotics-course/course3-Simulation/03-motion'
+
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/graph.cpp:RegistryInitializer:1333(3) opening config file 'rai.cfg'
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/graph.cpp:RegistryInitializer:1339(3)  - failed
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)         KOMO/verbose =     1 [i] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)         KOMO/verbose =     1 [i] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)                 seed =     0 [j] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)          opt/verbose =     1 [i] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)    opt/stopTolerance =  0.01 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)   opt/stopFTolerance =   0.1 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)   opt/stopGTolerance =    -1 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)        opt/stopEvals =  1000 [j] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)        opt/stopIters =  1000 [j] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)       opt/stopOuters =  1000 [j] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)    opt/stopLineSteps =    10 [j] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)    opt/stopTinySteps =    10 [j] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)         opt/initStep =     1 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)          opt/minStep =    -1 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)          opt/maxStep =   0.2 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)          opt/damping =     1 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)          opt/stepInc =   1.5 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)          opt/stepDec =   0.5 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)       opt/dampingInc =     1 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)       opt/dampingDec =     1 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)            opt/wolfe =  0.01 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)   opt/nonStrictSteps =     0 [j] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)    opt/allowOverstep =     0 [b] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3) opt/constrainedMethod =     2 [i] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)           opt/muInit =     1 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)         opt/muLBInit =     1 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/util.tpp:getParameterBase:65(3)        opt/aulaMuInc =     5 [d] (default!)
+/home/muddasser/git/dev/robotics-course/rai/rai/Geo/pairCollision.cpp:libccd:259(-2) simplex types 4 4 not handled
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/thread.cpp:threadClose:550(-1) timeout to end Thread::main of 'GlfwSpinnerSpi'
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/thread.cpp:threadClose:550(-1) timeout to end Thread::main of 'GlfwSpinnerSpi'
+/home/muddasser/git/dev/robotics-course/rai/rai/Core/thread.cpp:threadClose:550(-1) timeout to end Thread::main of 'GlfwSpinnerSpi'
