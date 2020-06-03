@@ -18,7 +18,48 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Objective}
 
+\newpage
 \section*{Work Plan}
+Our work plan can be structured into four work packages.
+
+\subsection*{Work Package 1: Throwing the ball}
+We will be using a robot to throw balls at the target.
+We first have to bring the robot into the correct position to be able to grasp the ball. 
+Then we have to grasp the ball and lift it up.
+We have to apply a force to the ball to increase its velocity.
+And finally we have to open the gripper to let the ball fly away. \\
+$ $ \\
+Some of these steps might be a bit difficulty to realize.
+We have to apply the right amount of force in the correct direction so the thrown ball will reach the its destination.
+This can be done by trial and error, since the ball does not need to hit the target at a specific point. \\
+During some initial trials we recognized that the default gripper can not properly grasp the ball.
+When we tried to throw the ball in some random direction the ball slips out of the robots fingers.
+To fix this issue we have to either improve the throwing technique or change the robot topology.
+If we replace the two fingers of the robot with some kind of cup, then this issue might be solved. \\
+$ $ \\
+We estimate that this work package will take approximately ...
+
+\subsection*{Work Package 2: Ball Management}
+The Ball Management will manage all balls in the simulation.
+It will be used to add balls to and remove balls from the simulation.
+It will also be used to calculate the trajectory for each ball.
+The goal keeper will be using this trajectory calculation to stop the balls. \\
+$ $ \\
+We estimate that this work package will take approximately ...
+
+\subsection*{Work Package 3: Goal keeper}
+The Goal keeper will be a robot that will have some kind of glove instead of its two fingers.
+It will be using the trajectory calculation to know where the balls will be hitting the goal.
+Then it will move the glove to the calculated position of the ball that will hit the goal first. \\
+$ $ \\
+We estimate that this work package will take approximately ...
+
+\subsection*{Work Package 4: Additional stuff}
+There is some additional stuff that needs to be setup.
+A goal must be created and positioned, a plane where balls that have not yet been thrown will laying must be created and positioned.
+The Goal keeper and all ball throwing robots will have to be correctly positioned. \\
+$ $ \\
+We estimate that this work package will take approximately ...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
