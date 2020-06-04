@@ -18,48 +18,71 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Objective}
 
-\newpage
+\subsection*{Primary Goal}
+The proposal is to build a robot arm ‘BlockBot’ whose task is to intercept and block the incoming objects (ball) from crossing/entering/hitting a certain demarcated area or object of interest.
+It is synonymous to a goalkeeper in hockey and football or imitation of a block by a defender in basketball.
+The scenario planned is like that of a goalie such that we have a single robot arm, a standard panda arm equipped with a flat paddle to its last joint, instead of a gripper.
+A demarcated region behind the arm which the robot should prevent the ball from entering.
+The throw of a ball is initiated using a robot arm on the opposite side of the goal.
+The ball is thrown towards the goal by the robot arm from random positions (points) taken by it.
+The trajectories are planned to have just enough accuracy towards the goal. \\
+$ $ \\
+The robot arm has a field of view of 180 degrees in front of it.
+A ball is removed from simulation once it has stopped moving for a certain amount of duration.
+The balls are shot periodically with certain interval of time from different positions continuously, until the simulation end time is reached.
+The perception pipeline is skipped for the task implementation such that the current ball position is directly queried through the API available in the current simulation environment for trajectory planning and ball intercept position calculations.
+
+\subsection*{Applications}
+This concept can be used for crowd pulling, fun and entertainment activities.
+Also, it can be used for football, hockey or basketball practise and training.
+With a ring or cup shaped attachment it can also be extended for playing throw and catch.
+
+
 \section*{Work Plan}
 Our work plan can be structured into four work packages.
 
-\subsection*{Work Package 1: Throwing the ball}
-We will be using a robot to throw balls at the target.
-We first have to bring the robot into the correct position to be able to grasp the ball. 
-Then we have to grasp the ball and lift it up.
-We have to apply a force to the ball to increase its velocity.
-And finally we have to open the gripper to let the ball fly away. \\
+\subsection*{Work Package 1: Scene creation}
+Building the scenario as described in the objective.
+Robot arm changes to include the paddle.
+Add a thrower arm robot, BlockBot and demarcation area/block for goal.
+Goal location and Blockbot location. \\
 $ $ \\
-Some of these steps might be a bit difficulty to realize.
-We have to apply the right amount of force in the correct direction so the thrown ball will reach the its destination.
-This can be done by trial and error, since the ball does not need to hit the target at a specific point. \\
-During some initial trials we recognized that the default gripper can not properly grasp the ball.
-When we tried to throw the ball in some random direction the ball slips out of the robots fingers.
-To fix this issue we have to either improve the throwing technique or change the robot topology.
-If we replace the two fingers of the robot with some kind of cup, then this issue might be solved. \\
-$ $ \\
-We estimate that this work package will take approximately ...
+We estimate that the work package will take approximately 10 hours. (Complete by 12/06/2020)
 
-\subsection*{Work Package 2: Ball Management}
-The Ball Management will manage all balls in the simulation.
-It will be used to add balls to and remove balls from the simulation.
-It will also be used to calculate the trajectory for each ball.
-The goal keeper will be using this trajectory calculation to stop the balls. \\
+\subsection*{Work Package 2: Throwing the ball}
+A robot arm is used to throw balls at the target (as a ball cannon).
+Here, as a first step the robot arm is moved towards the ball to attain a desirable grasp position.
+The ball is grasped, and lift is initiated.
+The force required is obtained by moving the robot arm to attain certain velocity and acceleration at the end effector and to open the gripper at the right moment to give it a desired trajectory.
+The task involves right amount of force to be applied in the in the correct direction, so the thrown ball reaches goal.
+This can be done by trial and error or with minimal accuracy, as the ball does not need to hit the target at a specific point. \\
 $ $ \\
-We estimate that this work package will take approximately ...
+Additional calibration forces and changes in robot movements would be required, to solve the ball slips from the robot gripper during the arm motion.
+Alternatively, we also investigate replacing the gripper with something like a cup, which might help solve the issue. \\
+$ $ \\
+We estimate that the work package will take approximately 20 hours. (Complete by 19/06/2020)
 
-\subsection*{Work Package 3: Goal keeper}
-The Goal keeper will be a robot that will have some kind of glove instead of its two fingers.
-It will be using the trajectory calculation to know where the balls will be hitting the goal.
-Then it will move the glove to the calculated position of the ball that will hit the goal first. \\
+\subsection*{Work Package 3: Ball Management}
+There will be two modules for ball management.
+At the thrower side it will be used to keep track of the ball initiation and termination in the simulation environment.
+On the BlockBot side It will also be used to calculate the trajectory and estimate the point of interception between the ball and the robot arm. \\
 $ $ \\
-We estimate that this work package will take approximately ...
+We estimate that this work package will take approximately 25 hours (Complete by 26/06/2020)
 
-\subsection*{Work Package 4: Additional stuff}
-There is some additional stuff that needs to be setup.
-A goal must be created and positioned, a plane where balls that have not yet been thrown will laying must be created and positioned.
-The Goal keeper and all ball throwing robots will have to be correctly positioned. \\
+\subsection*{Work Package 4: Goalie - BlockBot}
+Integrate all above packages.
+Implement manipulation of the robot arm using Inverse kinematics to the desired position to block the ball. \\
 $ $ \\
-We estimate that this work package will take approximately ...
+We estimate that this work package will take approximately 10 hours (Complete by 30/06/2020)
+
+\subsection*{Work Package 5: Extensive Testing}
+Defining and refining the objective functions to get the best results.
+Final integration the work packages, testing the various scenarios. \\
+$ $ \\
+We estimate that this work package will take approximately 20 hours (Complete by 03/07/2020)
+
+\subsection*{Work Package 6: Video and Presentation preparation}
+We estimate that this work package will take approximately 10 hours (Complete by 10/07/2020)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
