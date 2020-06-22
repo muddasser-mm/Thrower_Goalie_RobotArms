@@ -5,12 +5,12 @@ class BallManagement:
         self.dict = {}
 
     def create_ball(self, identifier, x, y, z):
-        identifier = str(indeitifier)
+        identifier = str(identifier)
         new_obj = self.config.addFrame(identifier)
         new_obj.setColor([1., 1., 0.])
         new_obj.setShape(self.ry.ST.sphere, [0.05])
         #new_obj.setShape(self.ry.ST.capsule, [0.05, 0.05])
-        new_obj.setPosition(x, y, z)
+        new_obj.setPosition([x, y, z])
         new_obj.setMass(0.1)
         new_obj.setContact(1)
 
@@ -30,12 +30,12 @@ class BallManagement:
         if identifier in self.dict:
             return self.dict.get(identifier)
         else:
-            print("The Ball with the identifier'" + identififer + "' doesn't exist.")
+            print("The Ball with the identifier'" + identifier + "' doesn't exist.")
             return None
 
 class Ball:
     def __init__(self, config, identifier):
-        self.config = configs
+        self.config = config
         self.identifier = identifier
         return
 
