@@ -41,11 +41,11 @@ class BallManagement:
         ----------
         identifier: str
             A string that uniquely identifies the newly created ball.
-        x: double
+        x: float
             The x position where the ball should be created.
-        y: double
+        y: float
             The y position where the ball should be created.
-        z: double
+        z: float
             The z position where the ball should be created.
         
         Returns
