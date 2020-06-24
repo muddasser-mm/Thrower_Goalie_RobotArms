@@ -1,25 +1,34 @@
 class Thrower:
-    def __init__(self, simulation, config, ry, time, np):
+    def __init__(self, simulation, viewer, config, ry, time, np):
         self.simulation = simulation
+        self.viewer = viewer
         self.config = config
         self.ry = ry
         self.time = time
         self.np = np
+
+        self.move_to_objective = None
+        self.grab_objective = None
+        self.throw_objective = None
         return
 
     gripper_identifier = "gripper"
     gripper_center_identifier = "gripperCenter"
     finger1_identifier = "finger1"
-    move_speed = 1
+    robot_base_identifier = "panda_link0"
+    move_speed = 1.
     proximity_error = 1.5e-2
+    throw_end_position_distance = 1.
 
-    def is_gripper_closed(self):
+    def is_gripper_grasping(self):
         return self.simulation.getGripperIsGrasping(self.gripper_identifier)
 
     def is_move_to_objective_fulfilled(self):
+        if self.move_to_objective is None:
+            return True
          # Check if objective has been achieved.
-        [y, J] = self.config.evalFeature(self.ry.FS.position, [self.gripper_center_identifier], target=self.move_to_objective)
-        error = self.np.abs(y).max()
+        [y, J] = self.config.evalFeature(self.ry.FS.position, [self.gripper_center_identifier])
+        error = self.np.abs(y-self.move_to_objective).max()
         return error < self.proximity_error
 
 
@@ -46,14 +55,15 @@ class Thrower:
             self.throw_objective = None
         return
 
-    def set_throw_objective(self, direction):
-        if direction == None:
-            self.throw_objective = None
-        elif len(direction) != 3:
-            print("Received direction parameter with wrong length.")
+    def set_throw_objective(self, height):
+        if height == None:
             self.throw_objective = None
         else:
-            self.throw_objective = [float(direction[0]), float(direction[1]), float(direction[2])]
+            [y_robot, J_robot] = self.config.evalFeature(self.ry.FS.position, [self.robot_base_identifier])
+            [y_gripper, J_gripper] = self.config.evalFeature(self.ry.FS.position, [self.gripper_center_identifier])
+            y_throw_direction = (y_robot - y_gripper) + y_robot
+            y_throw_target = self.throw_end_position_distance * (y_throw_direction / self.np.linalg.norm(y_throw_direction))
+            self.throw_objective = [y_throw_target[0], y_throw_target[1], float(height)]
         if self.throw_objective is not None:
             print("Overriding the move_to and grab objectives...")
             self.move_to_objective = None
@@ -91,6 +101,9 @@ class Thrower:
 
                 self.config.setFrameState(komo.getConfiguration(0))
                 q = self.config.getJointState()
+
+                self.viewer.recopyMeshes(self.config)
+                self.viewer.setConfiguration(self.config)
 
                 self.simulation.step(q, tau, self.ry.ControlMode.position)
         else:

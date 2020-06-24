@@ -57,7 +57,7 @@ class BallManagement:
         identifier = str(identifier)
         new_obj = self.config.addFrame(identifier)
         new_obj.setColor([1., 1., 0.])
-        new_obj.setShape(self.ry.ST.sphere, [0.05])
+        new_obj.setShape(self.ry.ST.sphere, [0.04])
         #new_obj.setShape(self.ry.ST.capsule, [0.05, 0.05])
         new_obj.setPosition([x, y, z])
         new_obj.setMass(0.1)
