@@ -100,7 +100,7 @@ class Thrower:
             komo = self.config.komo_path(1., 1, tau, True)
             komo.clearObjectives()
 
-            direction = [self.throw_objective[0], self.throw_objective[1]]
+            direction = [-self.throw_objective[0], -self.throw_objective[1]]
             direction = direction / self.np.linalg.norm(direction)
             orthogonal = self.np.cross([direction[0], direction[1], 0], [0, 0, 1])
 
