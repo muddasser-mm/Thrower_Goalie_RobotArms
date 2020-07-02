@@ -1,37 +1,44 @@
 world { }
 
 goal (world) {
-    X:< t(-2.7 -0.05 0) d(90 1 0 0)>,
-    mesh:'/home/muddasser/git/robotics-course/scenarios/meshes/goal/open_goal.obj'
-    meshscale: 0.08 #make it a bit smaller
+    X:< t(-2.7 0.055 0) d(90 0 0 1) d(90 1 0 0)>,
+    #mesh:'/home/muddasser/git/robotics-course/scenarios/meshes/goal/open_goal.obj'
+    mesh:'/home/muddasser/git/robotics-course/scenarios/meshes/goal/goal.obj'
+    meshscale: 0.8 #make it a bit smaller
 }
 
 fence1 (world)	{  
-    shape:ssBox, Q:<t(0.6 -2.5 0)>, size:[6.5 0.15 1 .02], color:[1 1 1]
+    shape:ssBox, Q:<t(0.6 -2.5 0.3)>, size:[6.5 0.15 0.8 .02], color:[1 1 1]
     contact, logical:{ }, mass = 100
     #friction:.1
 }
 
+#fencetest (world)	{  
+#    X:< t(0.6 -2.5 -0.01) d(90 1 0 0) >,
+#    mesh:'/home/muddasser/git/robotics-course/scenarios/meshes/goal/fence.obj'
+#    #friction:.1
+#}
+
 fence2 (world)	{  
-    shape:ssBox, Q:<t(0.6 2.5 0)>, size:[6.5 0.15 1 .02], color:[1 1 1]
+    shape:ssBox, Q:<t(0.6 2.5 0.3)>, size:[6.5 0.15 0.8 .02], color:[1 1 1]
     contact, logical:{ }, mass = 100
     #friction:.1
 }
 
 fence3 (world)	{  
-    shape:ssBox, Q:<t(3.91 0 0)>, size:[0.15 5.2 1 .02], color:[1 1 1]
+    shape:ssBox, Q:<t(3.91 0 0.3)>, size:[0.15 5.2 0.8 .02], color:[1 1 1]
     contact, logical:{ }, mass = 100
     #friction:.1
 }
 
 fence4a (world)	{  
-    shape:ssBox, Q:<t(-2.71 1.8 0)>, size:[0.15 1.6 1 .02], color:[1 1 1]
+    shape:ssBox, Q:<t(-2.71 1.68 0.3)>, size:[0.15 1.8 0.8 .02], color:[1 1 1]
     contact, logical:{ }, mass = 60
     #friction:.1
 }
 
 fence4b (world)	{  
-    shape:ssBox, Q:<t(-2.71 -1.8 0)>, size:[0.15 1.6 1 .02], color:[1 1 1]
+    shape:ssBox, Q:<t(-2.71 -1.68 0.3)>, size:[0.15 1.8 0.8 .02], color:[1 1 1]
     contact, logical:{ }, mass = 60
     #friction:.1
 }
