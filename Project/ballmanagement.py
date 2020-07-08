@@ -1,3 +1,4 @@
+from settings import *
 from trajectory import *
 
 class BallManagement:

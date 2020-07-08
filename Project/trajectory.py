@@ -4,6 +4,7 @@ def calculate_trajectory(ball, plane, math):
     vel = ball.get_velocity()
     pos = ball.get_position() - [0, 0, ball.get_radius()]
 
+    # x gives the time for the ball to reach y = 0 in the z plane
     x = (vel[2] * vel[2])
     x = x - (4 * g * pos[2])
     x = math.sqrt(x)
@@ -13,9 +14,11 @@ def calculate_trajectory(ball, plane, math):
         # Something went wrong. x should be > 0.
         return None
 
+    # Total distance travelled in time x
     zero_point = g * (x * x)
     zero_point = zero_point + (vel[2] * x)
     zero_point = zero_point + pos[2]
+    # Neglected g for x and y dorection
     zero_point = [(pos[0] + (vel[0] * x)), (pos[1] + (vel[1] * x)), zero_point]
     zero_point[2] = 0
 
@@ -32,7 +35,7 @@ def calculate_trajectory(ball, plane, math):
     print(traject_dir)
     print("plane_pos:")
     print(plane_pos)
-    print("plae_dir:")
+    print("plane_dir:")
     print(plane_dir)
 
     if (traject_dir[0] - plane_dir[0]) == (traject_dir[1] - plane_dir[1]):
@@ -42,6 +45,7 @@ def calculate_trajectory(ball, plane, math):
     divisor = traject_dir[1] * plane_dir[0]
     divisor = divisor - (traject_dir[0] * plane_dir[1])
 
+    # 
     xx = (plane_pos[1] * plane_dir[0]) / divisor
     xx = xx - ((traject_pos[1] * plane_dir[0]) / divisor)
     xx = xx + ((traject_pos[0] * plane_dir[1]) / divisor)
