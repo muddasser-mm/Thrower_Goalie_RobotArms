@@ -176,6 +176,10 @@ class Ball:
 
         return self.identifier
 
+    def set_position(self, pos):
+        self.config.getFrame(self.identifier).setPosition(pos)
+        return
+
     def get_position(self):
         """
         Returns
