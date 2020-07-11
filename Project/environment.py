@@ -40,7 +40,8 @@ class Environment:
             self.throwers.append(thrower)
             ball = self.ball_management.get_ball("ball_" + str(thrower.identifier))
             thrower_pos = thrower.get_position()
-            ball.set_position([thrower_pos[0] + 0.2, thrower_pos[1] + 0.5, 0.5])
+
+            ball.set_position([thrower_pos[0] + 0.6, thrower_pos[1], 0.3])
 
         # Create a goalie object
         self.goalie = Goalie(self.simulation, self.viewer, self.config, self.ry)
@@ -71,7 +72,10 @@ class Environment:
             print(state[state_index]["name"])
             state[state_index]["initialize"]()
         
-        while True:
+        # flag to tell when one step throw and stop is complete
+        self.sim_flag = True
+
+        while self.sim_flag:
             q = self.simulation.get_q()
 
             # Get all balls in the simulation (Each thrower has one ball)
@@ -95,6 +99,7 @@ class Environment:
                         self.states_index[i] = state_index + 1
                 else:
                     # Done
+                    sim_flag = False
                     print("Done")
                     return
                 # Compute new q of all throwers by using KOMO optimisation and update    

@@ -75,6 +75,14 @@ class State:
         return not self.thrower.is_gripper_grasping()
 
     def goalie_is_ball_stopped(self):
+        # If y co-ordinate of the ball is beyond the goal 
+        if self.ball.get_position()[1] > self.goalie.get_position()[1]:
+            return True
+
+        # RMS values across all direction is less than 0.01, then ball asssumed to be stand-still
+        if self.np.linalg.norm(self.ball.get_velocity()) < 1e-2 :
+            return True
+
         return False
 
     state_name = "name"
