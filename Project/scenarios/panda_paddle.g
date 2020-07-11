@@ -11,7 +11,7 @@ Delete panda_link5_0
 Delete panda_link6_0
 Delete panda_link7_0
        
-frame (panda_link0)	{ shape:capsule color:[.9 .9 .9 .1] size:[.1 .1] Q:<t(-.04 .0 .03) d(90 0 1 0)>, noVisual, contact:-2  }
+frame (panda_link0)	{ shape:capsule color:[.4 .4 .4 .6] size:[.1 .1] Q:<t(-.04 .0 .03) d(90 0 1 0)>, noVisual, contact:-2  }
 
 frame (panda_joint1)	{ shape:capsule color:[.9 .9 .9 .1] size:[.2 .08] Q:<d(90 0 1 0) t(0 0 -.15)>, noVisual, contact:-2  }
 frame (panda_joint3)	{ shape:capsule color:[.9 .9 .9 .1] size:[.2 .08] Q:<d(90 0 1 0) t(0 0 -.15)>, noVisual, contact:-2  }
@@ -49,5 +49,5 @@ Delete panda_rightfinger_0
 
 Include: 'paddle.g'
 
-Edit paddle (panda_joint7){ Q:<d(-90 0 1 0) d(135 0 0 1) t(0 0 -.155)> }
+Edit paddle (panda_joint7){ Q:<d(-90 0 1 0) d(135 0 0 1) t(0 0 -.155)>, color:[0.4 0.4 0.4] }
         
