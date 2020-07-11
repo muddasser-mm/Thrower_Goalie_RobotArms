@@ -1,4 +1,3 @@
-from settings import *
 from trajectory import *
 
 class BallManagement:
@@ -34,6 +33,8 @@ class BallManagement:
             parameter.
         math: math
             The math library.
+        dict: dictionary
+            Dictionary for thrower identifier and corresponding ball
         """
 
         self.config = config

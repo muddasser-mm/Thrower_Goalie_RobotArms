@@ -26,9 +26,12 @@ class State:
         goalie_pos = self.goalie.get_position()
         thrower_pos = self.thrower.get_position()
 
+        # normal vector from goalie to thrower
         direction = [thrower_pos[0] - goalie_pos[0], thrower_pos[1] - goalie_pos[1]]
         direction = direction / self.np.linalg.norm(direction)
 
+        # Move to the throw position.
+        # TODO - Will not work once we move to negative x-axis. We should limit the thrower position to positive only. 
         pos = thrower_pos + (distance_to_thrower * direction)
         pos = [pos[0], pos[1], height]
 
@@ -82,30 +85,35 @@ class State:
     def get_states(self):
         return [
             {
+                # Phase 1 : Picking up the ball
                 self.state_name: "Picking up the ball",
                 self.state_initialize: self.do_nothing,
                 self.state_iterate: self.thrower_move_to_ball,
                 self.state_is_done: self.thrower_is_move_done
             },
             {
+                # Phase 2 : Grasping up the ball
                 self.state_name: "Grasping the ball",
                 self.state_initialize: self.thrower_close_gripper,
                 self.state_iterate: self.thrower_move_to_ball,
                 self.state_is_done: self.thrower_is_grasping
             },
             {
+                # Phase 3 : Lift up the ball
                 self.state_name: "Lift the ball",
                 self.state_initialize: self.do_nothing,
                 self.state_iterate: self.thrower_move_opposite_the_goal,
                 self.state_is_done: self.thrower_is_move_done
             },
             {
+                # Phase 4 : Throwing up the ball
                 self.state_name: "Throwing the ball",
                 self.state_initialize: self.thrower_throw,
                 self.state_iterate: self.do_nothing,
                 self.state_is_done: self.thrower_is_not_grasping
             },
             {
+                # Phase 5 : Stopping up the ball
                 self.state_name: "Stopping the ball",
                 self.state_initialize: self.do_nothing,
                 self.state_iterate: self.goalie_stop_ball,

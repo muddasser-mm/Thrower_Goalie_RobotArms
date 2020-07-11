@@ -27,7 +27,7 @@ class Thrower:
     move_to_proximity_error = 1.5e-2
     throw_preparation_movement_percentage = 0.02
     throw_max_iterations = 20
-    throw_open_gripper_index = 13
+    throw_open_gripper_index = 15
     throw_initial_angle2 = 0.35
     throw_initial_angle4 = 0.67
     throw_initial_angle6 = 1.05
