@@ -108,7 +108,7 @@ fence3l3 (world)	{
 }
 
 fence4r1 (world)	{  
-    shape:ssBox, Q:<t(-3.075 -1.1 0.05)>, size:[0.15 0.8 0.05.02], color:[1 1 1]
+    shape:ssBox, Q:<t(-3.075 -1.2 0.05)>, size:[0.15 0.6 0.05.02], color:[1 1 1]
     contact, logical:{ }, mass = 100
 }
 
@@ -123,7 +123,7 @@ fence4r3 (world)	{
 }
 
 fence4l1 (world)	{  
-    shape:ssBox, Q:<t(-3.075 1.1 0.05)>, size:[0.15 0.8 0.05.02], color:[1 1 1]
+    shape:ssBox, Q:<t(-3.075 1.2 0.05)>, size:[0.15 0.6 0.05.02], color:[1 1 1]
     contact, logical:{ }, mass = 100
 }
 
@@ -165,7 +165,7 @@ goal (world) {
     X:< t(-3.2 0.055 0) d(90 0 0 1) d(90 1 0 0)>,
     mesh:'meshes/goal/goal.obj'
     #reduce the size of goal mesh
-    meshscale: 0.8 
+    meshscale: 1 
 }
     
 Prefix: "Goalee_"

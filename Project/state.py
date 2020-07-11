@@ -76,19 +76,25 @@ class State:
 
     def goalie_is_ball_stopped(self):
         # If y co-ordinate of the ball is beyond the goal 
-        if self.ball.get_position()[1] > self.goalie.get_position()[1]:
+        if (self.ball.get_position()[1] > 5) or (self.ball.get_position()[1] < -5) or (self.ball.get_position()[0] < self.goalie.get_position()[0] - 0.3) or (self.ball.get_position()[0] > 5):
             return True
 
         # RMS values across all direction is less than 0.01, then ball asssumed to be stand-still
-        if self.np.linalg.norm(self.ball.get_velocity()) < 1e-2 :
+        if self.np.linalg.norm(self.ball.get_velocity()) < 1e-1 :
             return True
 
         return False
 
-    state_name = "name"
-    state_initialize = "initialize"
-    state_iterate = "iterate"
-    state_is_done = "is_done"
+    def initial_pose(self):
+        return not self.thrower.is_gripper_grasping()
+
+    def is_pose_reached(self):
+        return not self.thrower.is_init_pose_reached()
+
+    state_name          = "name"
+    state_initialize    = "initialize"
+    state_iterate       = "iterate"
+    state_is_done       = "is_done"
 
     def get_states(self):
         return [
@@ -128,4 +134,3 @@ class State:
                 self.state_is_done: self.goalie_is_ball_stopped
             }
         ]
-

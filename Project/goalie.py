@@ -16,7 +16,6 @@ class Goalie:
         pos = self.config.frame(self.robot_base_identifier).getPosition()
         return [pos[0], pos[1]]
 
-
     def set_move_to_objective(self, position):
         #print("Goalie: set_move_to_objective")
         if position is None:
@@ -51,11 +50,13 @@ class Goalie:
 
         # For smooth q                       
         komo.add_qControlObjective(order=1, scale=1e0)
+        # prevent collisions
+        komo.addObjective([], self.ry.FS.accumulatedCollisions, [], self.ry.OT.ineq, [1e2])
 
         if self.move_to_objective is not None:
             # Apply move_to objective.
             position = self.move_to_objective
-            komo.addObjective([], self.ry.FS.position, [self.paddle_identifier], self.ry.OT.eq, [1e1], target=position)
+            komo.addObjective([], self.ry.FS.position, [self.paddle_identifier], self.ry.OT.eq, [1e2], target=position)
         if self.direction_objective is not None:
             # Apply direction objective.
             direction = self.direction_objective

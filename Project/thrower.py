@@ -23,15 +23,15 @@ class Thrower:
         self.robot_link6_identifier = "Thrower" + str(identifier) + "_panda_link6_1"
         return
 
-    move_speed = 1.
+    move_speed = 1.2
     move_to_proximity_error = 1.5e-2
     throw_preparation_movement_percentage = 0.02
     throw_max_iterations = 20
-    throw_open_gripper_index = 15
+    init_pose_max_iterations = 20
+    throw_open_gripper_index = 12
     throw_initial_angle2 = 0.35
     throw_initial_angle4 = 0.67
     throw_initial_angle6 = 1.05
-
 
     def is_gripper_grasping(self):
         return self.simulation.getGripperIsGrasping(self.gripper_identifier)
@@ -44,10 +44,13 @@ class Thrower:
         error = self.np.linalg.norm(y-self.move_to_objective)
         return error < self.move_to_proximity_error
 
+    def is_init_pose_reached(self):
+        if self.init_pose_objective is None:
+            return True
+
     def get_position(self):
         pos = self.config.frame(self.robot_base_identifier).getPosition()
         return [pos[0], pos[1]]
-
 
     def set_move_to_objective(self, position):
         #print("Thrower: set_move_to_objective")
@@ -182,6 +185,7 @@ class Thrower:
                 q = newQ
 
             return q - oldQ
+        
         elif self.grab_objective is not None or self.move_to_objective is not None:
             # Grab or move
             if self.grab_objective is not None:
@@ -193,18 +197,20 @@ class Thrower:
 
                 if self.is_gripper_grasping() == self.grab_objective:
                     self.grab_objective = None
+            
             if self.move_to_objective is not None:
-                # Move_to
+                # Move to objective
                 oldQ = self.simulation.get_q()
 
                 komo = self.config.komo_path(1., 1, tau, True)
                 komo.clearObjectives()
+                
                 # apply speed
                 komo.add_qControlObjective(order=1, scale=(1./self.move_speed))
                 # prevent collisions
-                komo.addObjective([], self.ry.FS.accumulatedCollisions, [], self.ry.OT.ineq, [1e4])
+                komo.addObjective([], self.ry.FS.accumulatedCollisions, [], self.ry.OT.ineq, [1e2])
                 # minimize position diff
-                komo.addObjective([1.], self.ry.FS.position, [self.gripper_center_identifier], self.ry.OT.sos, [1e1], target=self.move_to_objective)
+                komo.addObjective([1.], self.ry.FS.position, [self.gripper_center_identifier], self.ry.OT.sos, [1e2], target=self.move_to_objective)
                 # make gripper parallel to z axis
                 komo.addObjective([], self.ry.FS.vectorZ, [self.gripper_center_identifier], self.ry.OT.eq, [1e1], target=[0., 0., 1])
                 # don't close/open gripper
@@ -220,6 +226,7 @@ class Thrower:
                     self.move_to_objective = None
 
                 return q - oldQ
+        
         else:
             # Do nothing
             oldQ = self.simulation.get_q()

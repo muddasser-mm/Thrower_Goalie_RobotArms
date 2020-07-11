@@ -13,7 +13,11 @@ class Environment:
     
     # Total number of throwers
     thrower_identifiers = [1]
-    tau = 0.01
+    tau                 = 0.01
+    throwers            = []
+    states              = []
+    states_index        = []
+    goalie              = None
 
     def start(self):
         self.config = self.ry.Config()
@@ -25,36 +29,42 @@ class Environment:
 
         self.viewer.recopyMeshes(self.config)
         self.viewer.setConfiguration(self.config)
-
+        
         # To spawn a new ball at a random position (100 + int(thrower_identifier), 100, 0.5) TODO -Move ball creation in thrower at line 
         self.ball_management = BallManagement(self.config, self.ry, self.math)
         for thrower_identifier in self.thrower_identifiers:
             self.ball_management.create_ball("ball_" + str(thrower_identifier), 100 + int(thrower_identifier), 100, 0.5)
 
+        # Start simulation engine
         self.simulation = self.config.simulation(self.ry.SimulatorEngine.physx, True)
-        
+
+        # Extract the inital poses of goalie and throwers
+        self.q_init = self.simulation.get_q()
+
+        # Create a goalie object
+        self.goalie = Goalie(self.simulation, self.viewer, self.config, self.ry)
+
         # Create a thrower object
-        self.throwers = []
+        self.count = 0
         for thrower_identifier in self.thrower_identifiers:
             thrower = Thrower(self.simulation, self.viewer, self.config, self.ry, self.time, self.np, self.math, thrower_identifier)
             self.throwers.append(thrower)
             ball = self.ball_management.get_ball("ball_" + str(thrower.identifier))
             thrower_pos = thrower.get_position()
-
-            ball.set_position([thrower_pos[0] + 0.6, thrower_pos[1], 0.3])
-
-        # Create a goalie object
-        self.goalie = Goalie(self.simulation, self.viewer, self.config, self.ry)
+            # Set ball spawn position
+            ball.set_position([thrower_pos[0] + 0.5, thrower_pos[1], 0.3])
+            self.count = self.count + 1
 
         # Create a state object and populate the current state of each thrower in list states_index
-        self.states = []
-        self.states_index = []
         for thrower in self.throwers:
             ball = self.ball_management.get_ball("ball_" + str(thrower.identifier))
             state = State(ball, thrower, self.goalie, self.np)
             self.states.append(state.get_states())
             self.states_index.append(0)
         
+        # Get initial pose of thrower and goalie
+        self.q_ini = self.simulation.get_q()
+
         # Update simulation view
         self.viewer.recopyMeshes(self.config)
         self.viewer.setConfiguration(self.config)
@@ -62,6 +72,21 @@ class Environment:
 
         # To update the simulation view with the added ball. TODO - Not working when aligining to initial throw position
         self.simulation.step([], 0.01, self.ry.ControlMode.none)
+        
+        # Execute one throw and block
+        self.throw_and_block()
+    
+    def throw_and_block(self):
+        """
+        Parameters
+        ----------
+        None.
+        
+        Returns
+        -------
+        None
+            Executes one throw and block.
+        """
 
         # Populate all the states and state indices for all throwers and call initialize()
         for i in range(len(self.states)):
@@ -71,11 +96,9 @@ class Environment:
             # Initiate Phase 1 : Picking up the ball
             print(state[state_index]["name"])
             state[state_index]["initialize"]()
-        
-        # flag to tell when one step throw and stop is complete
-        self.sim_flag = True
 
-        while self.sim_flag:
+
+        while True:
             q = self.simulation.get_q()
 
             # Get all balls in the simulation (Each thrower has one ball)
@@ -99,7 +122,6 @@ class Environment:
                         self.states_index[i] = state_index + 1
                 else:
                     # Done
-                    sim_flag = False
                     print("Done")
                     return
                 # Compute new q of all throwers by using KOMO optimisation and update    
