@@ -51,6 +51,6 @@ Include: 'gripper.g'
 
 Edit gripper (panda_joint7){ Q:<d(-90 0 1 0) d(135 0 0 1) t(0 0 -.155)>, color:[0.4 0.4 0.4] }
        
-Edit finger1{ joint:transX Q:<> A:<t(+.07 0 -.05)> limits: [-.05 0.02], contact: -2, shape:ssBox, size:[.02 .04 .05 .01], color:[0.4 0.4 0.4] }
-Edit finger2{ joint:transX mimic:(finger1) Q:<> A:<d(180 0 0 1) t(+.07 0 -.05)>, contact: -2, shape:ssBox, size:[.02 .04 .05 .01], color:[0.4 0.4 0.4]}
+Edit finger1{ joint:transX Q:<> A:<t(+.07 0 -.05)> limits: [-.05 0.02], contact: -2, shape:ssBox, size:[.02 .05 .06 .01], color:[0.4 0.4 0.4] }
+Edit finger2{ joint:transX mimic:(finger1) Q:<> A:<d(180 0 0 1) t(+.07 0 -.05)>, contact: -2, shape:ssBox, size:[.02 .05 .06 .01], color:[0.4 0.4 0.4]}
         
