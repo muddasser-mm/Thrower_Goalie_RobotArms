@@ -22,7 +22,7 @@ class State:
     def thrower_move_opposite_the_goal(self):
         distance_to_thrower = 0.6
         # Appropriate height chosen to recoil
-        height = 0.3
+        height = 0.4
 
         goalie_pos = self.goalie.get_position()
         thrower_pos = self.thrower.get_position()

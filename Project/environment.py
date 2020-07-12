@@ -2,6 +2,7 @@ from thrower import *
 from ballmanagement import *
 from goalie import *
 from state import *
+from gui import *
 
 class Environment:
     def __init__(self, ry, math, np, time):
@@ -39,6 +40,10 @@ class Environment:
         # Start simulation engine
         self.simulation = self.config.simulation(self.ry.SimulatorEngine.physx, True)
 
+        # Add camera
+        self.simulation.addSensor("camera")
+        self.cameraFrame = self.config.frame("camera")
+
         # Extract the inital poses of goalie and throwers
         self.q_init = self.simulation.get_q()
 
@@ -72,7 +77,7 @@ class Environment:
         self.simulation.step([], 0.01, self.ry.ControlMode.none)
         
         # Execute one throw and block
-        self.throw_and_block()
+        #self.throw_and_block()
     
     def throw_and_block(self):
         """
