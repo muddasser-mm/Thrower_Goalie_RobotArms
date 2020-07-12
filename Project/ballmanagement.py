@@ -33,8 +33,6 @@ class BallManagement:
             parameter.
         math: math
             The math library.
-        dict: dictionary
-            Dictionary for thrower identifier and corresponding ball
         """
 
         self.config = config
@@ -122,8 +120,8 @@ class Ball:
 
     Methods
     -------
-    get_trajectory_estimate()
-        TODO
+    get_trajectory_estimate(plane)
+        Returns the estimated hitpoint with the plane.
     get_identifier()
         Returns the identifier of this Ball object.
     get_position()
@@ -163,7 +161,15 @@ class Ball:
 
     def get_trajectory_estimate(self, plane):
         """
-        TODO
+        Parameters
+        ----------
+        plane: array(x, y, dir_x, dir_y)
+            An array with 4 elements. The first two elements are the x and y coordinates of some point on the plane. The third and the fourth element are the x and y are the x and y coordinates of the direction of the plane.
+        
+        Returns
+        -------
+        array(x, y, z)
+            An array with 3 elements containing the x, y and z coordinates of the calculated 3D position.
         """
         return calculate_trajectory(self, plane, self.math)
 
@@ -178,6 +184,13 @@ class Ball:
         return self.identifier
 
     def set_position(self, pos):
+        """
+        Parameters
+        ----------
+        pos: array(x, y, z)
+            An array containing the x, y and z coordinates of the balls new position.
+        """
+
         self.config.getFrame(self.identifier).setPosition(pos)
         return
 
