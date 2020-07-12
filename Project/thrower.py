@@ -11,27 +11,30 @@ class Thrower:
         self.move_to_objective = None
         self.grab_objective = None
         self.throw_objective = None
+        self.init_pose_objective = None
 
-        self.identifier = identifier
-        self.gripper_identifier = "Thrower" + str(identifier) + "_gripper"
-        self.gripper_center_identifier = "Thrower" + str(identifier) + "_gripperCenter"
-        self.finger1_identifier = "Thrower" + str(identifier) + "_finger1"
-        self.robot_base_identifier = "Thrower" + str(identifier) + "_panda_link0"
-        self.robot_link1_identifier = "Thrower" + str(identifier) + "_panda_link1_1"
-        self.robot_link2_identifier = "Thrower" + str(identifier) + "_panda_link2_1"
-        self.robot_link4_identifier = "Thrower" + str(identifier) + "_panda_link4_1"
-        self.robot_link6_identifier = "Thrower" + str(identifier) + "_panda_link6_1"
+        self.identifier                 = identifier
+        self.gripper_identifier         = "Thrower" + str(identifier) + "_gripper"
+        self.gripper_center_identifier  = "Thrower" + str(identifier) + "_gripperCenter"
+        self.finger1_identifier         = "Thrower" + str(identifier) + "_finger1"
+        self.robot_base_identifier      = "Thrower" + str(identifier) + "_panda_link0"
+        self.robot_link1_identifier     = "Thrower" + str(identifier) + "_panda_link1_1"
+        self.robot_link2_identifier     = "Thrower" + str(identifier) + "_panda_link2_1"
+        self.robot_link4_identifier     = "Thrower" + str(identifier) + "_panda_link4_1"
+        self.robot_link6_identifier     = "Thrower" + str(identifier) + "_panda_link6_1"
         return
 
-    move_speed = 1.2
-    move_to_proximity_error = 1.5e-2
-    throw_preparation_movement_percentage = 0.02
-    throw_max_iterations = 20
-    init_pose_max_iterations = 20
-    throw_open_gripper_index = 12
-    throw_initial_angle2 = 0.35
-    throw_initial_angle4 = 0.67
-    throw_initial_angle6 = 1.05
+    move_speed                              = 1.2
+    move_to_proximity_error                 = 1.5e-2
+    throw_preparation_movement_percentage   = 0.02
+    throw_max_iterations                    = 20
+    init_pose_max_iterations                = 20
+    throw_open_gripper_index                = 14
+    throw_initial_angle2                    = 0.35
+    throw_initial_angle4                    = 0.67
+    throw_initial_angle6                    = 1.05
+    throw_pose_path_trajectory              = []
+    init_pose_count                         = 0
 
     def is_gripper_grasping(self):
         return self.simulation.getGripperIsGrasping(self.gripper_identifier)
@@ -45,12 +48,15 @@ class Thrower:
         return error < self.move_to_proximity_error
 
     def is_init_pose_reached(self):
-        if self.init_pose_objective is None:
-            return True
+        return not self.init_pose_objective
 
     def get_position(self):
         pos = self.config.frame(self.robot_base_identifier).getPosition()
         return [pos[0], pos[1]]
+
+    def set_position(self, position):
+        self.config.frame(self.robot_base_identifier).setPosition(position)
+        return
 
     def set_move_to_objective(self, position):
         #print("Thrower: set_move_to_objective")
@@ -89,11 +95,19 @@ class Thrower:
             self.throw_state = 1
             self.throw_index = 0
             self.throw_initial_state = None
+            # reset for recording fresh trajectory
+            self.throw_pose_path_trajectory = []
 
         if self.move_to_objective is not None or self.grab_objective is not None:
             print("Overriding the move_to and grab objectives...")
             self.move_to_objective = None
             self.grab_objective = None
+        return
+
+    def set_reset_pose_objective(self):
+        # Length of recorded trajectory path
+        self.init_pose_count = len(self.throw_pose_path_trajectory)
+        self.init_pose_objective = True
         return
 
     def rotate(self, vec, angle):
@@ -121,6 +135,9 @@ class Thrower:
             # For smooth q                       
             #komo.add_qControlObjective(order=1, scale=1e0)
 
+            # prevent collisions
+            komo.addObjective([], self.ry.FS.accumulatedCollisions, [], self.ry.OT.ineq, [1e4])
+
             # directional objectives
             komo.addObjective([], self.ry.FS.vectorX, [self.robot_link1_identifier], self.ry.OT.eq, [1e1], target=[direction[0], direction[1], 0])
             komo.addObjective([], self.ry.FS.vectorX, [self.gripper_center_identifier], self.ry.OT.eq, [1e1], target=orthogonal)
@@ -143,11 +160,15 @@ class Thrower:
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link2_identifier], self.ry.OT.eq, [1e1], target=self.rotate(direction, -angle_2))
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link4_identifier], self.ry.OT.eq, [1e1], target=self.rotate(-direction, angle_4))
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link6_identifier], self.ry.OT.eq, [1e1], target=self.rotate(direction, -angle_6))
-                else:
+                
+                # TODO - To remove
+                #else:
                     # end
-                    komo.addObjective([], self.ry.FS.vectorY, [self.robot_link2_identifier], self.ry.OT.eq, [1e1], target=[direction[0], direction[1], 0])
-                    komo.addObjective([], self.ry.FS.vectorY, [self.robot_link4_identifier], self.ry.OT.eq, [1e1], target=[-direction[0], -direction[1], 0])
-                    komo.addObjective([], self.ry.FS.vectorY, [self.robot_link6_identifier], self.ry.OT.eq, [1e1], target=[direction[0], direction[1], 0])
+                    #komo.addObjective([], self.ry.FS.vectorY, [self.robot_link2_identifier], self.ry.OT.eq, [1e1], target=[direction[0], direction[1], 0])
+                    #komo.addObjective([], self.ry.FS.vectorY, [self.robot_link4_identifier], self.ry.OT.eq, [1e1], target=[-direction[0], -direction[1], 0])
+                    #komo.addObjective([], self.ry.FS.vectorY, [self.robot_link6_identifier], self.ry.OT.eq, [1e1], target=[direction[0], direction[1], 0])
+                else:
+                    self.throw_objective = None
 
                 if self.throw_index == self.throw_open_gripper_index:
                     # Open gripper
@@ -155,6 +176,7 @@ class Thrower:
 
                 self.throw_index = self.throw_index + 1
 
+            # TODO - To remove
             ## apply speed
             #komo.add_qControlObjective(order=1, scale=(1./self.throw_speed))
             ## prevent collisions
@@ -183,6 +205,10 @@ class Thrower:
                     self.throw_state = 2
             else:
                 q = newQ
+
+            if self.throw_state == 2:
+                # Append the negative path difference in the list
+                self.throw_pose_path_trajectory.append(-(q - oldQ))
 
             return q - oldQ
         
@@ -226,8 +252,37 @@ class Thrower:
                     self.move_to_objective = None
 
                 return q - oldQ
+
+        elif self.init_pose_objective:
+            # TODO - To remove
+            #oldQ = self.simulation.get_q()
+
+            #komo = self.config.komo_path(1., 1, tau, True)
+            #komo.clearObjectives()
+            # apply speed
+            #komo.add_qControlObjective(order=1, scale=(1./self.move_speed))
+            # prevent collisions
+            #komo.addObjective([], self.ry.FS.accumulatedCollisions, [], self.ry.OT.ineq, [1e2])
+            # Objective to minimise to initial Q
+            #komo.aWddObjective([], feature=self.ry.FS.qItself, type=self.ry.OT.eq, target=self.q_init , order=1, scale=[1e2])
+           
+            #komo.optimize()
+
+            #self.config.setFrameState(komo.getConfiguration(0))
+            #q = self.config.getJointState()
+
+            # Check if objective is fulfilled
+            #if self.np.linalg.norm(self.q_init - q) < 1e-2:
+            #    self.init_pose_objective = False
+
+            self.init_pose_count = self.init_pose_count - 1
+
+            if(self.init_pose_count <= 0):
+                self.init_pose_objective = False
+
+            return self.throw_pose_path_trajectory[self.init_pose_count]
         
         else:
             # Do nothing
             oldQ = self.simulation.get_q()
-            return oldQ - oldQ
+            return oldQ - oldQ          

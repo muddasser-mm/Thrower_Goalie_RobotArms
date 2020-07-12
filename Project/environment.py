@@ -18,6 +18,7 @@ class Environment:
     states              = []
     states_index        = []
     goalie              = None
+    thrower_movesteps   = 40 
 
     def start(self):
         self.config = self.ry.Config()
@@ -52,7 +53,7 @@ class Environment:
             ball = self.ball_management.get_ball("ball_" + str(thrower.identifier))
             thrower_pos = thrower.get_position()
             # Set ball spawn position
-            ball.set_position([thrower_pos[0] + 0.5, thrower_pos[1], 0.3])
+            ball.set_position([thrower_pos[0] + 0.5, thrower_pos[1], 0.1])
             self.count = self.count + 1
 
         # Create a state object and populate the current state of each thrower in list states_index
@@ -61,9 +62,6 @@ class Environment:
             state = State(ball, thrower, self.goalie, self.np)
             self.states.append(state.get_states())
             self.states_index.append(0)
-        
-        # Get initial pose of thrower and goalie
-        self.q_ini = self.simulation.get_q()
 
         # Update simulation view
         self.viewer.recopyMeshes(self.config)
@@ -142,3 +140,33 @@ class Environment:
                 ball = self.balls[i]
                 prev_ball_pos = self.balls_position[i]
                 ball.set_velocity(self.tau, prev_ball_pos)
+
+    def move_thrower(self, thrower_identifier, position):
+        """
+        Parameters
+        ----------
+        thrower_identifier: Thrower id
+        position: x, z coordinatesfor the thrower
+
+        Returns
+        -------
+        None
+
+            Moves the thrower to desired position
+        """
+
+        for step in range(self.thrower_movesteps):
+            #x = (x1 + (fraction)(x2-x1))
+            x = self.throwers[thrower_identifier].get_position()[0] + ((step + 1)/self.thrower_movesteps)*(position[0] - self.throwers[thrower_identifier].get_position()[0] )
+            y = self.throwers[thrower_identifier].get_position()[1] + ((step + 1)/self.thrower_movesteps)*(position[1] - self.throwers[thrower_identifier].get_position()[1] )
+
+            # Set new position of the thrower
+            self.throwers[thrower_identifier].set_position([x, y, 0])
+            
+            # Update simulation view
+            self.viewer.recopyMeshes(self.config)
+            self.viewer.setConfiguration(self.config)
+            self.simulation.setState(self.config.getFrameState())
+
+            # To update the simulation view with the added ball. TODO - Not working when aligining to initial throw position
+            self.simulation.step([], 0.01, self.ry.ControlMode.none)

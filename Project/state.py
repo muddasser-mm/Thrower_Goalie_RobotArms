@@ -21,7 +21,8 @@ class State:
 
     def thrower_move_opposite_the_goal(self):
         distance_to_thrower = 0.6
-        height = 0.1
+        # Appropriate height chosen to recoil
+        height = 0.3
 
         goalie_pos = self.goalie.get_position()
         thrower_pos = self.thrower.get_position()
@@ -64,6 +65,11 @@ class State:
         self.goalie.set_direction_objective(direction)
         return
 
+    def thrower_reset_pose(self):
+        # TODO- Remvove, use for testing
+        #self.thrower.set_move_to_objective([2.4, -1.5, 1.5])
+        self.thrower.set_reset_pose_objective()
+        return
 
     def thrower_is_move_done(self):
         return self.thrower.is_move_to_objective_fulfilled()
@@ -80,16 +86,15 @@ class State:
             return True
 
         # RMS values across all direction is less than 0.01, then ball asssumed to be stand-still
-        if self.np.linalg.norm(self.ball.get_velocity()) < 1e-1 :
+        if self.np.linalg.norm(self.ball.get_velocity()) < 1 :
             return True
 
         return False
 
-    def initial_pose(self):
-        return not self.thrower.is_gripper_grasping()
-
     def is_pose_reached(self):
-        return not self.thrower.is_init_pose_reached()
+        #TODO -  Remove next line, used for debug
+        #return self.thrower.is_move_to_objective_fulfilled()
+        return self.thrower.is_init_pose_reached()
 
     state_name          = "name"
     state_initialize    = "initialize"
@@ -132,5 +137,12 @@ class State:
                 self.state_initialize: self.do_nothing,
                 self.state_iterate: self.goalie_stop_ball,
                 self.state_is_done: self.goalie_is_ball_stopped
-            }
+            },
+			{
+			    # Phase 6 : Resetting back to initial pose
+			    self.state_name: "Resetting to initial pose",
+			    self.state_initialize: self.thrower_reset_pose,
+			    self.state_iterate: self.do_nothing,
+			    self.state_is_done: self.is_pose_reached
+			}
         ]
