@@ -29,6 +29,8 @@ def calculate_trajectory(ball, plane, math):
     # We use the quadratic formula (german: Mitternachtsformel) to calculate where f(x) = 0
     x = (vel[2] * vel[2])
     x = x - (4 * g * pos[2])
+    if x < 0:
+        return None
     x = math.sqrt(x)
     x = (-vel[2] - x) / (2 * g)
     

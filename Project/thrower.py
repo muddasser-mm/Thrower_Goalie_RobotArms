@@ -30,7 +30,7 @@ class Thrower:
 
     move_speed                              = 1.2
     move_to_proximity_error                 = 1.5e-2
-    throw_preparation_movement_percentage   = 0.02
+    throw_preparation_movement_percentage   = 0.03
     throw_max_iterations                    = 20
     init_pose_max_iterations                = 20
     throw_open_gripper_index                = 14
@@ -253,7 +253,7 @@ class Thrower:
         elif self.init_pose_objective:
             self.init_pose_count = self.init_pose_count - 1
 
-            if(self.init_pose_count <= 0):
+            if self.init_pose_count <= 0:
                 self.init_pose_objective = False
 
             return self.throw_pose_path_trajectory[self.init_pose_count]

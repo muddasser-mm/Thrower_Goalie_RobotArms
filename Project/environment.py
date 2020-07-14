@@ -5,11 +5,12 @@ from state import *
 from gui import *
 
 class Environment:
-    def __init__(self, ry, math, np, time):
+    def __init__(self, ry, math, np, time, random):
         self.ry = ry
         self.math = math
         self.np = np
         self.time = time
+        self.random = random
         return
     
     # Total number of throwers
@@ -51,76 +52,14 @@ class Environment:
         for thrower_identifier in self.thrower_identifiers:
             thrower = Thrower(self.simulation, self.viewer, self.config, self.ry, self.time, self.np, self.math, thrower_identifier)
             self.throwers.append(thrower)
-
-        # Create a state object and populate the current state of each thrower in list states_index
-        for thrower in self.throwers:
-            ball = self.ball_management.get_ball("ball_" + str(thrower.identifier))
-            state = State(ball, thrower, self.goalie, self.np, self.tau)
-            self.states.append(state.get_states())
-            self.states_index.append(0)
         
         # Execution sequence to always follow
         #self.move_thrower(0, [2.6, -1.5])
         #self.spawn_ball()
         #self.throw_and_block()
 
-    def move_thrower(self, thrower_identifier, position):
-        """
-        Parameters
-        ----------
-        thrower_identifier: int
-        position: x, z coordinatesfor the thrower
 
-        Returns
-        -------
-        None
-
-            Moves the thrower to desired position
-        """
-        for step in range(self.thrower_movesteps):
-            #x = (x1 + (fraction)(x2-x1))
-            x = self.throwers[thrower_identifier].get_position()[0] + ((step + 1)/self.thrower_movesteps)*(position[0] - self.throwers[thrower_identifier].get_position()[0] )
-            y = self.throwers[thrower_identifier].get_position()[1] + ((step + 1)/self.thrower_movesteps)*(position[1] - self.throwers[thrower_identifier].get_position()[1] )
-
-            # Set new position of the thrower
-            self.throwers[thrower_identifier].set_position([x, y, 0])
-            
-            # Update simulation view
-            self.viewer.recopyMeshes(self.config)
-            self.viewer.setConfiguration(self.config)
-            self.simulation.setState(self.config.getFrameState())
-
-            # To update the simulation view with the added ball.
-            self.simulation.step([], 0.01, self.ry.ControlMode.none)
-
-    def spawn_ball(self):
-        """
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
-
-            Spawn ball near the thrower
-        """
-        for thrower in self.throwers:
-            ball = self.ball_management.get_ball("ball_" + str(thrower.identifier))
-            thrower_pos = thrower.get_position()
-            # Set ball spawn position
-            ball.set_position([thrower_pos[0] + 0.5, thrower_pos[1], 0.1])
-
-        # Update simulation view
-        self.viewer.recopyMeshes(self.config)
-        self.viewer.setConfiguration(self.config)
-        self.simulation.setState(self.config.getFrameState())
-
-        # To update the simulation view with the added ball. TODO - Not working when aligining to initial throw position
-        self.simulation.step([], 0.01, self.ry.ControlMode.none)
-
-
-    def throw_and_block(self):
+    def throw_and_block(self, options=None):
         """
         Parameters
         ----------
@@ -131,6 +70,17 @@ class Environment:
         None
             Executes one throw and block.
         """
+
+        # Create a state object and populate the current state of each thrower in list states_index
+        for thrower in self.throwers:
+            ball = self.ball_management.get_ball("ball_" + str(thrower.identifier))
+            state = State(ball, thrower, self.goalie, self.np, self.random, self.tau)
+            option = None
+            if options is not None:
+                if options.get("Thrower" + str(thrower.identifier)) is not None:
+                    option = options.get("Thrower" + str(thrower.identifier))
+            self.states.append(state.get_states(option))
+            self.states_index.append(0)
 
         # Populate all the states and state indices for all throwers and call initialize()
         for i in range(len(self.states)):
@@ -165,9 +115,11 @@ class Environment:
                             state[state_index + 1]["initialize"]()
                         self.states_index[i] = state_index + 1
                 else:
-                    # Done
-                    print("Done")
-                    return
+                    # Done. Repeat.
+                    self.states_index[i] = 0
+                    print(state[0]["name"])
+                    state[0]["initialize"]()
+                    continue
                 # Compute new q of all throwers by using KOMO optimisation and update    
                 q = q + self.throwers[i].calculate_q_diff(self.tau)
             

@@ -1,9 +1,10 @@
 class State:
-    def __init__(self, ball, thrower, goalie, np, tau):
+    def __init__(self, ball, thrower, goalie, np, random, tau):
         self.ball = ball
         self.thrower = thrower
         self.goalie = goalie
         self.np = np
+        self.random = random
         self.tau = tau
 
         self.direction_objective_flag = False
@@ -11,10 +12,40 @@ class State:
 
     def do_nothing(self):
         return
-    
+
+    def delay_time_steps(self):
+        self.delay_index = self.delay_index + 1
+        return
+
+    def move_thrower_to_initial_position(self):
+        total_steps = int(1. / self.thrower_move_step_size)
+
+        fraction = total_steps - self.thrower_move_step_index
+        if fraction <= 0:
+            fraction = 0
+            self.thrower_move_step_index = total_steps
+
+        if self.thrower_initial_position is None or len(self.thrower_initial_position) != 2:
+            return
+
+        fraction = 1. / float(fraction)
+
+        current_position = self.thrower.get_position()
+        new_position_x = current_position[0] + fraction * (self.thrower_initial_position[0] - current_position[0])
+        new_position_y = current_position[1] + fraction * (self.thrower_initial_position[1] - current_position[1])
+        self.thrower.set_position([new_position_x, new_position_y, 0])
+
+        self.thrower_move_step_index = self.thrower_move_step_index + 1
+        return
+
     def thrower_move_to_ball(self):
         ball_position = self.ball.get_position()
         self.thrower.set_move_to_objective(ball_position)
+        return
+
+    def thrower_move_above_the_ball(self):
+        ball_position = self.ball.get_position()
+        self.thrower.set_move_to_objective([ball_position[0], ball_position[1], ball_position[2] + 0.2])
         return
 
     def thrower_close_gripper(self):
@@ -139,6 +170,37 @@ class State:
         self.thrower.set_reset_pose_objective()
         return
 
+    def reset_thrower_position_randomly(self):
+        x = self.random.uniform(0, 3)
+        y = self.random.uniform(-2.5, 2.5)
+
+        self.thrower_initial_position = [x, y]
+        return
+
+    def reset_ball_position(self):
+        pos = self.thrower.get_position()
+        self.ball.set_position([pos[0] + 0.5, pos[1], 0.1])
+
+        self.thrower.viewer.recopyMeshes(self.thrower.config)
+        self.thrower.viewer.setConfiguration(self.thrower.config)
+        self.thrower.simulation.setState(self.thrower.config.getFrameState())
+        return
+
+
+    def is_delay_finished(self):
+        if self.delay_index > self.delay_max_index:
+            if not self.delay_only_once:
+                self.delay_index = 0
+            return True
+        return False
+
+    def thrower_was_moved(self):
+        total_steps = int(1. / self.thrower_move_step_size)
+        if self.thrower_move_step_index + 1 >= total_steps:
+            self.thrower_move_step_index = 0
+            return True
+        return False
+
     def thrower_is_move_done(self):
         return self.thrower.is_move_to_objective_fulfilled()
 
@@ -162,53 +224,124 @@ class State:
     def is_pose_reached(self):
         return self.thrower.is_init_pose_reached()
 
+    def return_false(self):
+        return False
+
+    def return_true(self):
+        return True
+
+
+
     state_name          = "name"
     state_initialize    = "initialize"
     state_iterate       = "iterate"
     state_is_done       = "is_done"
 
-    def get_states(self):
-        return [
-            {
-                # Phase 1 : Picking up the ball
-                self.state_name: "Picking up the ball",
+    thrower_initial_position = []
+    thrower_move_step_size = 1
+    thrower_move_step_index = 0
+
+    delay_max_index = 0
+    delay_index = 0
+    delay_only_once = True
+
+    should_loop = False
+    reset_with_random_position = False
+
+    def get_states(self, options=None):
+        if options is not None:
+            if options.get("initial_position") is not None:
+                self.thrower_initial_position = options.get("initial_position")
+            if options.get("reset_with_random_position") is not None:
+                if options.get("reset_with_random_position"):
+                    self.reset_with_random_position = True
+            if options.get("change_thrower_position_smoothly") is not None:
+                if options.get("change_thrower_position_smoothly"):
+                    self.thrower_move_step_size = 0.025
+            if options.get("initial_delay_time_steps") is not None:
+                self.delay_max_index = float(options.get("initial_delay_time_steps"))
+            if options.get("delay_only_once") is not None:
+                if not options.get("delay_only_once"):
+                    self.delay_only_once = False
+            if options.get("loop") is not None:
+                if options.get("loop"):
+                    self.should_loop = True
+
+        list_of_states = []
+        if self.delay_max_index > 0:
+            list_of_states.append({
+                self.state_name: "Waiting...",
                 self.state_initialize: self.do_nothing,
-                self.state_iterate: self.thrower_move_to_ball,
-                self.state_is_done: self.thrower_is_move_done
-            },
-            {
-                # Phase 2 : Grasping up the ball
-                self.state_name: "Grasping the ball",
-                self.state_initialize: self.thrower_close_gripper,
-                self.state_iterate: self.thrower_move_to_ball,
-                self.state_is_done: self.thrower_is_grasping
-            },
-            {
-                # Phase 3 : Lift up the ball
-                self.state_name: "Lift the ball",
+                self.state_iterate: self.delay_time_steps,
+                self.state_is_done: self.is_delay_finished
+            })
+        list_of_states.append({
+            self.state_name: "Move thrower to initial position",
+            self.state_initialize: self.do_nothing,
+            self.state_iterate: self.move_thrower_to_initial_position,
+            self.state_is_done: self.thrower_was_moved
+        })
+        list_of_states.append({
+            self.state_name: "Reset ball position",
+            self.state_initialize: self.reset_ball_position,
+            self.state_iterate: self.do_nothing,
+            self.state_is_done: self.return_true
+        })
+        list_of_states.append({
+            self.state_name: "Move above the ball",
+            self.state_initialize: self.do_nothing,
+            self.state_iterate: self.thrower_move_above_the_ball,
+            self.state_is_done: self.thrower_is_move_done
+        })
+        list_of_states.append({
+            self.state_name: "Picking up the ball",
+            self.state_initialize: self.do_nothing,
+            self.state_iterate: self.thrower_move_to_ball,
+            self.state_is_done: self.thrower_is_move_done
+        })
+        list_of_states.append({
+            self.state_name: "Grasping the ball",
+            self.state_initialize: self.thrower_close_gripper,
+            self.state_iterate: self.thrower_move_to_ball,
+            self.state_is_done: self.thrower_is_grasping
+        })
+        list_of_states.append({
+            self.state_name: "Lift the ball",
+            self.state_initialize: self.do_nothing,
+            self.state_iterate: self.thrower_move_opposite_the_goal,
+            self.state_is_done: self.thrower_is_move_done
+        })
+        list_of_states.append({
+            self.state_name: "Throwing the ball",
+            self.state_initialize: self.thrower_throw,
+            self.state_iterate: self.do_nothing,
+            self.state_is_done: self.thrower_is_not_grasping
+        })
+        list_of_states.append({
+            self.state_name: "Stopping the ball",
+            self.state_initialize: self.do_nothing,
+            self.state_iterate: self.goalie_stop_ball_algo1,
+            self.state_is_done: self.goalie_is_ball_stopped
+        })
+        list_of_states.append({
+		    self.state_name: "Resetting to initial pose",
+		    self.state_initialize: self.thrower_reset_pose,
+		    self.state_iterate: self.do_nothing,
+		    self.state_is_done: self.is_pose_reached
+		})
+        if self.should_loop:
+            if self.reset_with_random_position:
+                list_of_states.append({
+                    self.state_name: "Setting the thrower to a random position",
+                    self.state_initialize: self.reset_thrower_position_randomly,
+                    self.state_iterate: self.do_nothing,
+                    self.state_is_done: self.return_true
+                })
+        if not self.should_loop:
+            list_of_states.append({
+                self.state_name: "Done",
                 self.state_initialize: self.do_nothing,
-                self.state_iterate: self.thrower_move_opposite_the_goal,
-                self.state_is_done: self.thrower_is_move_done
-            },
-            {
-                # Phase 4 : Throwing up the ball
-                self.state_name: "Throwing the ball",
-                self.state_initialize: self.thrower_throw,
                 self.state_iterate: self.do_nothing,
-                self.state_is_done: self.thrower_is_not_grasping
-            },
-            {
-                # Phase 5 : Stopping up the ball
-                self.state_name: "Stopping the ball",
-                self.state_initialize: self.do_nothing,
-                self.state_iterate: self.goalie_stop_ball_algo1,
-                self.state_is_done: self.goalie_is_ball_stopped
-            },
-			{
-			    # Phase 6 : Resetting back to initial pose
-			    self.state_name: "Resetting to initial pose",
-			    self.state_initialize: self.thrower_reset_pose,
-			    self.state_iterate: self.do_nothing,
-			    self.state_is_done: self.is_pose_reached
-			}
-        ]
+                self.state_is_done: self.return_false
+            })
+        return list_of_states
