@@ -60,11 +60,14 @@ class Goalie:
         if self.move_to_objective is not None:
             # Apply move_to objective.
             position = self.move_to_objective
+            if position[2] < 0.1:
+                position[2] = 0.1
             komo.addObjective([], self.ry.FS.position, [self.paddle_identifier], self.ry.OT.eq, [1e2], target=position)
         if self.direction_objective is not None:
             # Apply direction objective.
             direction = self.direction_objective
             komo.addObjective([], self.ry.FS.vectorZ, [self.paddle_identifier], self.ry.OT.eq, [1e1], target=[-direction[0], -direction[1], 0])
+            komo.addObjective([], self.ry.FS.vectorX, [self.paddle_identifier], self.ry.OT.eq, [1e1], target=[0, 0, 1])
 
         komo.optimize()
 
