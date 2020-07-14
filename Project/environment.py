@@ -32,8 +32,8 @@ class Environment:
         self.viewer.recopyMeshes(self.config)
         self.viewer.setConfiguration(self.config)
         
-        # To spawn a new ball at a random position (100 + int(thrower_identifier), 100, 0.5) TODO -Move ball creation in thrower at line 
-        self.ball_management = BallManagement(self.config, self.ry, self.math)
+        # To spawn a new ball at a random position (100 + int(thrower_identifier), 100, 0.5)
+        self.ball_management = BallManagement(self.config, self.ry, self.math, self.np)
         for thrower_identifier in self.thrower_identifiers:
             self.ball_management.create_ball("ball_" + str(thrower_identifier), 100 + int(thrower_identifier), 100, 0.5)
 
@@ -43,9 +43,6 @@ class Environment:
         # Add camera
         self.simulation.addSensor("camera")
         self.cameraFrame = self.config.frame("camera")
-
-        # Extract the inital poses of goalie and throwers
-        self.q_init = self.simulation.get_q()
 
         # Create a goalie object
         self.goalie = Goalie(self.simulation, self.viewer, self.config, self.ry)
@@ -58,7 +55,7 @@ class Environment:
         # Create a state object and populate the current state of each thrower in list states_index
         for thrower in self.throwers:
             ball = self.ball_management.get_ball("ball_" + str(thrower.identifier))
-            state = State(ball, thrower, self.goalie, self.np)
+            state = State(ball, thrower, self.goalie, self.np, self.tau)
             self.states.append(state.get_states())
             self.states_index.append(0)
         
@@ -93,7 +90,7 @@ class Environment:
             self.viewer.setConfiguration(self.config)
             self.simulation.setState(self.config.getFrameState())
 
-            # To update the simulation view with the added ball. TODO - Not working when aligining to initial throw position
+            # To update the simulation view with the added ball.
             self.simulation.step([], 0.01, self.ry.ControlMode.none)
 
     def spawn_ball(self):
@@ -184,8 +181,9 @@ class Environment:
             # Run one time step in simulation
             self.simulation.step(q, self.tau, self.ry.ControlMode.position)
 
-            # Update ball velocities
+            # Update ball velocities and direction
             for i in range(len(self.balls)):
                 ball = self.balls[i]
                 prev_ball_pos = self.balls_position[i]
                 ball.set_velocity(self.tau, prev_ball_pos)
+                ball.set_direction(self.tau, prev_ball_pos)

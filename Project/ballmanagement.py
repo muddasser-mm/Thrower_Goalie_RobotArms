@@ -21,7 +21,7 @@ class BallManagement:
         ball matches the given identifier None is returned.
     """
 
-    def __init__(self, config, ry, math):
+    def __init__(self, config, ry, math, np):
         """
         Parameters
         ----------
@@ -33,11 +33,14 @@ class BallManagement:
             parameter.
         math: math
             The math library.
+		np: numpy
+			numpy library for array math operations
         """
 
         self.config = config
         self.ry = ry
         self.math = math
+        self.np = np
         self.dict = {}
 
     ball_mass = 0.1
@@ -71,7 +74,7 @@ class BallManagement:
         new_obj.setMass(self.ball_mass)
         new_obj.setContact(1)
 
-        ball = Ball(self.config, self.math, identifier, self.ball_mass, self.ball_radius)
+        ball = Ball(self.config, self.math, self.np, identifier, self.ball_mass, self.ball_radius)
         self.dict[identifier] = ball
         return ball
 
@@ -134,7 +137,7 @@ class Ball:
         simulation environment.
     """
 
-    def __init__(self, config, math, identifier, mass, radius):
+    def __init__(self, config, math, np, identifier, mass, radius):
         """
         Parameters
         ----------
@@ -151,12 +154,14 @@ class Ball:
             The radius of the ball sphere.
         """
 
-        self.config = config
-        self.math = math
+        self.config     = config
+        self.math       = math
+        self.np         = np
         self.identifier = str(identifier)
-        self.mass = float(mass)
-        self.radius = float(radius)
-        self.velocity = [0, 0, 0]
+        self.mass       = float(mass)
+        self.radius     = float(radius)
+        self.velocity   = [0, 0, 0]
+        self.direction  = [0, 0, 0]
         return
 
     def get_trajectory_estimate(self, plane):
@@ -217,6 +222,20 @@ class Ball:
 
         self.velocity = (self.get_position() - previous_pos) * (1 / float(tau))
 
+    def set_direction(self, tau, previous_pos):
+        """
+        Parameters
+        ----------
+        tau: float
+            The current time step.
+        previous_pos: array(x, y, z)
+            The position of the previous frame.
+        """
+
+        self.direction = (self.get_position() - previous_pos)
+        if self.np.linalg.norm(self.direction) != 0:
+            self.direction = self.direction / self.np.linalg.norm(self.direction)
+
     def get_velocity(self):
         """
         Returns
@@ -227,6 +246,17 @@ class Ball:
         """
 
         return self.velocity
+
+    def get_direction(self):
+        """
+        Returns
+        -------
+        array(x, y, z)
+            An array containing the x, y, z coordinates of the
+            balls velocity.
+        """
+
+        return self.direction        
 
     def get_mass(self):
         """

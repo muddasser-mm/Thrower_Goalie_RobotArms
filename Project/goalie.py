@@ -16,6 +16,10 @@ class Goalie:
         pos = self.config.frame(self.robot_base_identifier).getPosition()
         return [pos[0], pos[1]]
 
+    def get_pad_position(self):
+        pos = self.config.frame(self.paddle_identifier).getPosition()
+        return pos
+
     def set_move_to_objective(self, position):
         #print("Goalie: set_move_to_objective")
         if position is None:

@@ -22,6 +22,10 @@ class Thrower:
         self.robot_link2_identifier     = "Thrower" + str(identifier) + "_panda_link2_1"
         self.robot_link4_identifier     = "Thrower" + str(identifier) + "_panda_link4_1"
         self.robot_link6_identifier     = "Thrower" + str(identifier) + "_panda_link6_1"
+        self.robot_joint1_identifier     = "Thrower" + str(identifier) + "_panda_joint1"
+        self.robot_joint2_identifier     = "Thrower" + str(identifier) + "_panda_joint2"
+        self.robot_joint4_identifier     = "Thrower" + str(identifier) + "_panda_joint4"
+        self.robot_joint6_identifier     = "Thrower" + str(identifier) + "_panda_joint6"
         return
 
     move_speed                              = 1.2
@@ -116,7 +120,7 @@ class Thrower:
         scale = self.math.cos(angle)
         xy = vec * self.np.linalg.norm(vec) * scale
         return [xy[0], xy[1], height]
-    
+
     def calculate_q_diff(self, tau):
         #print("Thrower: calculate_q_diff")
         if self.throw_objective is not None:
@@ -142,14 +146,22 @@ class Thrower:
             komo.addObjective([], self.ry.FS.vectorX, [self.robot_link1_identifier], self.ry.OT.eq, [1e1], target=[direction[0], direction[1], 0])
             komo.addObjective([], self.ry.FS.vectorX, [self.gripper_center_identifier], self.ry.OT.eq, [1e1], target=orthogonal)
     
+            # Move to throw curl position
             if self.throw_state == 1:
                 # Prepare throw
                     angle_2 = self.throw_initial_angle2
                     angle_4 = self.throw_initial_angle4
                     angle_6 = self.throw_initial_angle6
+
+                    # apply speed limits
+                    # komo.add_qControlObjective(order=1, scale=1./self.move_speed)
+
+                    # link objectives
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link2_identifier], self.ry.OT.eq, [1e1], target=self.rotate(direction, -angle_2))
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link4_identifier], self.ry.OT.eq, [1e1], target=self.rotate(-direction, angle_4))
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link6_identifier], self.ry.OT.eq, [1e1], target=self.rotate(direction, -angle_6))
+            
+            # Initiate throw
             elif self.throw_state == 2:
                 # Execute throw
                 if self.throw_index < self.throw_max_iterations:
@@ -160,13 +172,11 @@ class Thrower:
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link2_identifier], self.ry.OT.eq, [1e1], target=self.rotate(direction, -angle_2))
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link4_identifier], self.ry.OT.eq, [1e1], target=self.rotate(-direction, angle_4))
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link6_identifier], self.ry.OT.eq, [1e1], target=self.rotate(direction, -angle_6))
-                
-                # TODO - To remove
-                #else:
-                    # end
-                    #komo.addObjective([], self.ry.FS.vectorY, [self.robot_link2_identifier], self.ry.OT.eq, [1e1], target=[direction[0], direction[1], 0])
-                    #komo.addObjective([], self.ry.FS.vectorY, [self.robot_link4_identifier], self.ry.OT.eq, [1e1], target=[-direction[0], -direction[1], 0])
-                    #komo.addObjective([], self.ry.FS.vectorY, [self.robot_link6_identifier], self.ry.OT.eq, [1e1], target=[direction[0], direction[1], 0])
+                    #komo.addObjective([], self.ry.FS.qItself, [self.robot_joint2_identifier, self.robot_joint4_identifier, self.robot_joint6_identifier], self.ry.OT.ineq, [1e1], target=[0.1, 0.1, 0.1], order=2)
+                    #komo.addObjective([], self.ry.FS.position, [self.gripper_center_identifier], self.ry.OT.sos, [1e0], target=15, order=1)
+
+                    #ang_vel = (self.config.evalFeature(self.ry.FS.angularVel, [self.gripper_center_identifier]))
+                    #print("Angular velocity of gripper is : ", ang_vel)
                 else:
                     self.throw_objective = None
 
@@ -175,19 +185,6 @@ class Thrower:
                     self.simulation.openGripper(self.gripper_identifier)
 
                 self.throw_index = self.throw_index + 1
-
-            # TODO - To remove
-            ## apply speed
-            #komo.add_qControlObjective(order=1, scale=(1./self.throw_speed))
-            ## prevent collisions
-            #komo.addObjective([], self.ry.FS.accumulatedCollisions, [], self.ry.OT.ineq, [1e4])
-            ## minimize position diff
-            #komo.addObjective([1.], self.ry.FS.position, [self.gripper_center_identifier], self.ry.OT.sos, [1e1], target=self.throw_objective)
-            ## don't close/open gripper
-            #komo.addObjective([], self.ry.FS.qItself, [self.finger1_identifier], self.ry.OT.eq, scale=[1e1], order=1)
-            #if self.is_gripper_grasping():
-            #    # align gripper for opening
-            #    komo.addObjective([], self.ry.FS.vectorZ, [self.gripper_center_identifier], self.ry.OT.eq, [1e1], target=[0, 0, 1])
 
             komo.optimize()
 
@@ -209,6 +206,7 @@ class Thrower:
             # Append the negative path difference in the list
             self.throw_pose_path_trajectory.append(-(q - oldQ))
 
+            # Return Q_diff
             return q - oldQ
         
         elif self.grab_objective is not None or self.move_to_objective is not None:
@@ -231,15 +229,15 @@ class Thrower:
                 komo.clearObjectives()
                 
                 # apply speed
-                komo.add_qControlObjective(order=1, scale=(1./self.move_speed))
+                komo.add_qControlObjective(order=1, scale=1./self.move_speed)
                 # prevent collisions
-                komo.addObjective([], self.ry.FS.accumulatedCollisions, [], self.ry.OT.ineq, [1e2])
+                komo.addObjective([], self.ry.FS.accumulatedCollisions, [], self.ry.OT.ineq, [1e3])
                 # minimize position diff
-                komo.addObjective([1.], self.ry.FS.position, [self.gripper_center_identifier], self.ry.OT.sos, [1e2], target=self.move_to_objective)
+                komo.addObjective([1.], self.ry.FS.position, [self.gripper_center_identifier], self.ry.OT.sos, [1e1], target=self.move_to_objective)
                 # make gripper parallel to z axis
                 komo.addObjective([], self.ry.FS.vectorZ, [self.gripper_center_identifier], self.ry.OT.eq, [1e1], target=[0., 0., 1])
                 # don't close/open gripper
-                komo.addObjective([], self.ry.FS.qItself, [self.finger1_identifier], self.ry.OT.eq, scale=[1e1], order=1)
+                komo.addObjective([], self.ry.FS.qItself, [self.finger1_identifier], self.ry.OT.eq, scale=[5e0], order=1)
 
                 komo.optimize()
 
@@ -253,27 +251,6 @@ class Thrower:
                 return q - oldQ
 
         elif self.init_pose_objective:
-            # TODO - To remove
-            #oldQ = self.simulation.get_q()
-
-            #komo = self.config.komo_path(1., 1, tau, True)
-            #komo.clearObjectives()
-            # apply speed
-            #komo.add_qControlObjective(order=1, scale=(1./self.move_speed))
-            # prevent collisions
-            #komo.addObjective([], self.ry.FS.accumulatedCollisions, [], self.ry.OT.ineq, [1e2])
-            # Objective to minimise to initial Q
-            #komo.aWddObjective([], feature=self.ry.FS.qItself, type=self.ry.OT.eq, target=self.q_init , order=1, scale=[1e2])
-           
-            #komo.optimize()
-
-            #self.config.setFrameState(komo.getConfiguration(0))
-            #q = self.config.getJointState()
-
-            # Check if objective is fulfilled
-            #if self.np.linalg.norm(self.q_init - q) < 1e-2:
-            #    self.init_pose_objective = False
-
             self.init_pose_count = self.init_pose_count - 1
 
             if(self.init_pose_count <= 0):

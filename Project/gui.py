@@ -7,11 +7,11 @@ def plot_pos(thrower_pos, goalie_pos):
     ax1 = fig.add_subplot(111, aspect='equal')
 
     # Thrower
-    ax1.plot(thrower_pos[0], thrower_pos[1], 'ro')
+    ax1.plot(thrower_pos[0], thrower_pos[1], 'ch')
     ax1.annotate('Thrower', (thrower_pos[0], thrower_pos[1]), size=18)
 
     # Goalie
-    ax1.plot(goalie_pos[0], goalie_pos[1], 'ro')
+    ax1.plot(goalie_pos[0], goalie_pos[1], 'g^')
     ax1.annotate('Goalie', (goalie_pos[0], goalie_pos[1]), size=18)
 
     ax1.axis([-5, 5, -5, 5])
@@ -52,14 +52,18 @@ def thrower_gui(env, thrower_id):
     layout = [  [sg.Text('Enter the x and y co-ordinates of the thrower', justification='center')],      
                 [sg.Text('x: Range [0,3]        - ', size=(30, 1), key='-x-'), sg.InputText()],
                 [sg.Text('y: Range [-2.5, 2.5]  - ', size=(30, 1), key='-y-'), sg.InputText()],     
-                [sg.Button('Show'), sg.OK(), sg.Cancel()] ]    
+                [sg.Button('Show'), sg.OK(), sg.Button('Default')] ]    
 
     window = sg.Window('Thrower co-ordinates', layout)    
 
     while True:
         event, values = window.read()
-        values[0] = float(values[0])
-        values[1] = float(values[1])
+        if values[0] is not '' and values[1] is not '':
+            values[0] = float(values[0])
+            values[1] = float(values[1])
+        else:
+            values[0] = 0
+            values[1] = 0
 
         if event in (sg.WIN_CLOSED, 'Default'):
             # From .g file
@@ -68,7 +72,7 @@ def thrower_gui(env, thrower_id):
             break
 
         if event in ('Show','OK'):
-            if (values[0] > 3) or (values[0] < 0) or (values[1] > 2.5) or (values[1] < -2.5):  
+            if (values[0] > 3) or (values[0] < -0.5) or (values[1] > 2.5) or (values[1] < -2.5):  
                 sg.popup(   'You entered x: ' + str(values[0]) + ' and y: ' + str(values[1]) + '. Invalid values entered. Accepted x: Range [0,3] and y: Range [-2.5, 2.5]', 
                             title = 'Invalid inputs', text_color = 'red') 
             
