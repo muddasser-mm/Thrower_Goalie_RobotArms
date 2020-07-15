@@ -33,7 +33,7 @@ class Thrower:
     throw_preparation_movement_percentage   = 0.03
     throw_max_iterations                    = 20
     init_pose_max_iterations                = 20
-    throw_open_gripper_index                = 14
+    throw_open_gripper_percentage           = 0.7
     throw_initial_angle2                    = 0.35
     throw_initial_angle4                    = 0.67
     throw_initial_angle6                    = 1.05
@@ -180,7 +180,7 @@ class Thrower:
                 else:
                     self.throw_objective = None
 
-                if self.throw_index == self.throw_open_gripper_index:
+                if self.throw_index == self.math.floor(self.throw_open_gripper_percentage * self.throw_max_iterations):
                     # Open gripper
                     self.simulation.openGripper(self.gripper_identifier)
 

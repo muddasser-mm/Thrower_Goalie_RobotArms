@@ -181,6 +181,7 @@ Prefix!
         
 Edit Goalee_panda_link0 (world) { Q:<t(-2.5 0 0) d(0 0 0 0)> }
 Edit Thrower1_panda_link0 (world)  { Q:<t( 2.6 0 0) d(0 0 0 1)> }
+#Edit Thrower2_panda_link0 (world)  { Q:<t( 2.6 1 0) d(0 0 0 1)> }
 
 camera(world){
     Q:<t(0 0 5) d(90 1 0 0)>,

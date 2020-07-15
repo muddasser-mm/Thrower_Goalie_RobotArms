@@ -76,6 +76,10 @@ class State:
         thrower_pos = self.thrower.get_position()
 
         direction = [goalie_pos[0] - thrower_pos[0], goalie_pos[1] - thrower_pos[1]]
+
+        max_iterations_offset = self.thrower.math.floor(self.np.linalg.norm(direction))
+        self.thrower.throw_max_iterations = self.thrower.throw_max_iterations + max_iterations_offset
+
         self.thrower.set_throw_objective(direction)
         return
 
