@@ -60,6 +60,7 @@ class State:
         height = 0.4
 
         goalie_pos = self.goalie.get_position()
+        goalie_pos[1] = goalie_pos[1] + self.thrower_initial_goal_position
         thrower_pos = self.thrower.get_position()
 
         # normal vector from goalie to thrower
@@ -75,6 +76,7 @@ class State:
 
     def thrower_throw(self):
         goalie_pos = self.goalie.get_position()
+        goalie_pos[1] = goalie_pos[1] + self.thrower_initial_goal_position
         thrower_pos = self.thrower.get_position()
 
         direction = [goalie_pos[0] - thrower_pos[0], goalie_pos[1] - thrower_pos[1]]
@@ -90,6 +92,7 @@ class State:
             distance_to_goalie = 0.5
 
             goalie_pos = self.goalie.get_position()
+            goalie_pos[1] = goalie_pos[1] + self.thrower_initial_goal_position
             thrower_pos = self.thrower.get_position()
 
             direction = [thrower_pos[0] - goalie_pos[0], thrower_pos[1] - goalie_pos[1]]
@@ -192,14 +195,17 @@ class State:
         self.thrower.simulation.setState(self.thrower.config.getFrameState())
         return
 
-    def update_thrower_position(self):
+    def update_thrower_position_and_goal(self):
         if self.thrower_position_method == "random":
             x = self.random.uniform(0, 3)
             y = self.random.uniform(-2.5, 2.5)
+            goal_pos = self.random.uniform(-0.8, 0.8)
             self.thrower_initial_position = [x, y]
+            self.thrower_initial_goal_position = goal_pos
         elif self.thrower_position_method != "values":
-            posx, posy = self.gui(self.env, 0)
+            posx, posy, goal_position = self.gui(self.env, 0)
             self.thrower_initial_position = [posx, posy]
+            self.thrower_initial_goal_position = goal_position
         return
 
 
@@ -255,6 +261,7 @@ class State:
 
     thrower_position_method = None
     thrower_initial_position = []
+    thrower_initial_goal_position = 0.
     thrower_move_step_size = 1
     thrower_move_step_index = 0
 
@@ -272,6 +279,8 @@ class State:
                 self.thrower_position_method = options.get("get_thrower_position_using")
             if options.get("thrower_position_values") is not None:
                 self.thrower_initial_position = options.get("thrower_position_values")
+            if options.get("goal_intersection_y_value") is not None:
+                self.thrower_initial_goal_position = float(options.get("goal_intersection_y_value"))
             if options.get("change_thrower_position_smoothly") is not None:
                 if options.get("change_thrower_position_smoothly"):
                     self.thrower_move_step_size = 0.025
@@ -289,7 +298,7 @@ class State:
         list_of_states = []
         list_of_states.append({
             self.state_name: "Update thrower position",
-            self.state_initialize: self.update_thrower_position,
+            self.state_initialize: self.update_thrower_position_and_goal,
             self.state_iterate: self.do_nothing,
             self.state_is_done: self.return_true
         })
