@@ -14,7 +14,7 @@ class Environment:
         return
     
     # Total number of throwers
-    thrower_identifiers = [1, 2]
+    thrower_identifiers = [1]
     tau                 = 0.01
     throwers            = []
     states              = []
