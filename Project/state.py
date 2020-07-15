@@ -262,6 +262,8 @@ class State:
     delay_index = 0
     delay_only_once = True
 
+    algorithm = 1
+
     should_loop = False
 
     def get_states(self, options=None):
@@ -278,6 +280,8 @@ class State:
             if options.get("delay_only_once") is not None:
                 if not options.get("delay_only_once"):
                     self.delay_only_once = False
+            if options.get("algorithm") is not None:
+                self.algorithm = int(options.get("algorithm"))
             if options.get("loop") is not None:
                 if options.get("loop"):
                     self.should_loop = True
@@ -338,10 +342,13 @@ class State:
             self.state_iterate: self.do_nothing,
             self.state_is_done: self.thrower_is_not_grasping
         })
+        algo = self.goalie_stop_ball_algo1
+        if self.algorithm == 2:
+            algo = self.goalie_stop_ball_algo2
         list_of_states.append({
             self.state_name: "Stopping the ball",
             self.state_initialize: self.do_nothing,
-            self.state_iterate: self.goalie_stop_ball_algo1,
+            self.state_iterate: algo,
             self.state_is_done: self.goalie_is_ball_stopped
         })
         list_of_states.append({
