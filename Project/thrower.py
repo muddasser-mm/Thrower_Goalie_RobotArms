@@ -1,12 +1,12 @@
 class Thrower:
     def __init__(self, simulation, viewer, config, ry, time, np, math, identifier):
         self.simulation = simulation
-        self.viewer = viewer
-        self.config = config
-        self.ry = ry
-        self.time = time
-        self.np = np
-        self.math = math
+        self.viewer     = viewer
+        self.config     = config
+        self.ry         = ry
+        self.time       = time
+        self.np         = np
+        self.math       = math
 
         self.move_to_objective = None
         self.grab_objective = None
@@ -22,10 +22,10 @@ class Thrower:
         self.robot_link2_identifier     = "Thrower" + str(identifier) + "_panda_link2_1"
         self.robot_link4_identifier     = "Thrower" + str(identifier) + "_panda_link4_1"
         self.robot_link6_identifier     = "Thrower" + str(identifier) + "_panda_link6_1"
-        self.robot_joint1_identifier     = "Thrower" + str(identifier) + "_panda_joint1"
-        self.robot_joint2_identifier     = "Thrower" + str(identifier) + "_panda_joint2"
-        self.robot_joint4_identifier     = "Thrower" + str(identifier) + "_panda_joint4"
-        self.robot_joint6_identifier     = "Thrower" + str(identifier) + "_panda_joint6"
+        self.robot_joint1_identifier    = "Thrower" + str(identifier) + "_panda_joint1"
+        self.robot_joint2_identifier    = "Thrower" + str(identifier) + "_panda_joint2"
+        self.robot_joint4_identifier    = "Thrower" + str(identifier) + "_panda_joint4"
+        self.robot_joint6_identifier    = "Thrower" + str(identifier) + "_panda_joint6"
         return
 
     move_speed                              = 1.2
@@ -62,7 +62,9 @@ class Thrower:
         self.config.frame(self.robot_base_identifier).setPosition(position)
         return
 
-    def set_move_to_objective(self, position):
+    def set_move_to_objective(self, position, move_speed = None):
+        if move_speed is None:
+            move_speed = self.move_speed
         #print("Thrower: set_move_to_objective")
         if position is None:
             self.move_to_objective = None
@@ -234,7 +236,7 @@ class Thrower:
                 komo.clearObjectives()
                 
                 # apply speed
-                komo.add_qControlObjective(order=1, scale=1./self.move_speed)
+                komo.add_qControlObjective(order=1, scale=self.move_speed*1e-1)
                 # prevent collisions
                 komo.addObjective([], self.ry.FS.accumulatedCollisions, [], self.ry.OT.ineq, [1e3])
                 # minimize position diff

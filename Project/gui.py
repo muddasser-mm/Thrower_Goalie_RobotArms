@@ -3,6 +3,18 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimage   
 
 def plot_pos(thrower_pos, goal_position, goalie_pos):
+    """
+    Parameters
+    ----------
+    thrower_pos: thrower_pos
+       Thrower position
+    goal_position: goal_position
+        Delta directional change to aim for at the goal
+    
+    Returns
+    -------
+    Plot the graph
+    """    
     fig = plt.figure(figsize=(15,15))
     ax1 = fig.add_subplot(111, aspect='equal')
 
@@ -91,7 +103,7 @@ def thrower_gui(env, thrower_id):
     layout = [  [sg.Text('Enter the x and y co-ordinates of the thrower', justification='center')],      
                 [sg.Text('x: Range [0,3]                - ', size=(30, 1), key='-x-'), sg.InputText()],
                 [sg.Text('y: Range [-2.5, 2.5]          - ', size=(30, 1), key='-y-'), sg.InputText()],
-                [sg.Text('Goal position: Range (-0.8, 0.8) - ', size=(30, 1), key='-y-'), sg.InputText()],      
+                [sg.Text('Goal position: Range (-0.8, 0.8) - ', size=(30, 1), key='-g-'), sg.InputText()],      
                 [sg.Button('Show'), sg.OK(), sg.Button('Default')] ]    
 
     window = sg.Window('Thrower co-ordinates', layout)    
@@ -116,7 +128,7 @@ def thrower_gui(env, thrower_id):
             break
 
         if event in ('Show','OK'):
-            if (values[0] > 3) or (values[0] < -0.5) or (values[1] > 2.5) or (values[1] < -2.5) or (values[2] > 0.8) or (values[2] < -0.8):  
+            if (values[0] > 3) or (values[0] < -0.5) or (values[1] > 2.5) or (values[1] < -2.5) or (values[2] > 1) or (values[2] < -1):  
                 sg.popup(   'You entered x: ' + str(values[0]) + ' , y: ' + str(values[1]) + ' and goal position: ' + str(values[2]) + 
                             '. Invalid values entered. Accepted x: Range [0,3], y: Range [-2.5, 2.5] and goal position: Range [-1, 1]', 
                             title = 'Invalid inputs', text_color = 'red') 

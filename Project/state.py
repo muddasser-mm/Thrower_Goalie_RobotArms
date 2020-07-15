@@ -1,5 +1,31 @@
 class State:
     def __init__(self, ball, thrower, goalie, np, random, gui, env, tau):
+        """
+        Parameters
+        ----------
+        ball: ball object
+            The ball from the Ball management class.
+        thrower: thrower
+            Corresponding thrower being controlled
+        goalie: goalie
+            Goalie being controlled            
+		np: numpy
+			numpy library for array math operations
+		random: random
+			random library       
+        gui: gui
+			GUI implementation object   
+        env: env
+			Environment object to control       
+        tau: tau
+            Simulation time step          
+
+        Returns
+        -------
+        None
+
+            Constructor
+        """
         self.ball = ball
         self.thrower = thrower
         self.goalie = goalie
@@ -42,12 +68,12 @@ class State:
 
     def thrower_move_to_ball(self):
         ball_position = self.ball.get_position()
-        self.thrower.set_move_to_objective(ball_position)
+        self.thrower.set_move_to_objective(ball_position, 0.5)
         return
 
     def thrower_move_above_the_ball(self):
         ball_position = self.ball.get_position()
-        self.thrower.set_move_to_objective([ball_position[0], ball_position[1], ball_position[2] + 0.2])
+        self.thrower.set_move_to_objective([ball_position[0], ball_position[1], ball_position[2] + 0.2], 0.5)
         return
 
     def thrower_close_gripper(self):
@@ -57,7 +83,7 @@ class State:
     def thrower_move_opposite_the_goal(self):
         # Appropriate parameter values for recoil position - Fixed values got from trial and testing
         distance_to_thrower = 0.6
-        height = 0.4
+        height = 0.35
 
         goalie_pos = self.goalie.get_position()
         goalie_pos[1] = goalie_pos[1] + self.thrower_initial_goal_position
@@ -71,7 +97,7 @@ class State:
         pos = thrower_pos + (distance_to_thrower * direction)
         pos = [pos[0], pos[1], height]
 
-        self.thrower.set_move_to_objective(pos)
+        self.thrower.set_move_to_objective(pos, 0.2)
         return
 
     def thrower_throw(self):
@@ -81,9 +107,11 @@ class State:
 
         direction = [goalie_pos[0] - thrower_pos[0], goalie_pos[1] - thrower_pos[1]]
 
-        max_iterations_offset = self.thrower.math.floor(self.np.linalg.norm(direction))
-        self.thrower.throw_max_iterations = self.thrower.throw_max_iterations + max_iterations_offset
-
+        # To be adjusted as per the distance from the goalie
+        self.thrower.throw_max_iterations = self.thrower.throw_max_iterations + ( 10 - self.thrower.math.floor(self.np.linalg.norm(direction)) )
+        # Range between 0.6 and 0.75
+        self.thrower.throw_open_gripper_percentage = max (0.65, min (0.65 + (((1 - ((self.thrower.math.floor(self.np.linalg.norm(direction))) / 5)) * 0.2), 0.85 ))
+        print(self.thrower.throw_open_gripper_percentage)
         self.thrower.set_throw_objective(direction)
         return
 
@@ -125,7 +153,7 @@ class State:
         traject = self.ball.get_trajectory_estimate([plane_pos[0], plane_pos[1], plane_dir[0], plane_dir[1]])
         if traject is None:
             return
-        self.goalie.set_move_to_objective(traject)
+        self.goalie.set_move_to_objective(traject, 1.3)
         self.goalie.set_direction_objective(direction)
         return
 
@@ -162,7 +190,7 @@ class State:
         if ball_pos[2] > 1:
             pad_pos[2] = 1                 
 
-        self.goalie.set_move_to_objective(pad_pos)
+        self.goalie.set_move_to_objective(pad_pos, 1)
 
         # Distance between ball and goalie pad
         dist_to_ball = self.np.linalg.norm(self.goalie.get_pad_position() - ball_pos)
@@ -254,26 +282,28 @@ class State:
     def return_true(self):
         return True
 
-
+    #####################################################
 
     state_name          = "name"
     state_initialize    = "initialize"
     state_iterate       = "iterate"
     state_is_done       = "is_done"
 
-    thrower_position_method = None
-    thrower_initial_position = []
-    thrower_initial_goal_position = 0.
-    thrower_move_step_size = 1
-    thrower_move_step_index = 0
+    thrower_position_method         = None
+    thrower_initial_position        = []
+    thrower_initial_goal_position   = 0.
+    thrower_move_step_size          = 1
+    thrower_move_step_index         = 0
 
     delay_max_index = 0
-    delay_index = 0
+    delay_index     = 0
     delay_only_once = True
 
-    algorithm = 1
+    algorithm       = 1
 
     should_loop = False
+
+    #######################################################
 
     def get_states(self, options=None):
         if options is not None:

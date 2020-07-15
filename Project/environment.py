@@ -6,10 +6,31 @@ from gui import *
 
 class Environment:
     def __init__(self, ry, math, np, time, random):
-        self.ry = ry
-        self.math = math
-        self.np = np
-        self.time = time
+        """
+        Parameters
+        ----------
+        ry: libry
+            The libry module that was used for the config 
+            parameter.
+        math: math
+            The math library.
+		np: numpy
+			numpy library for array math operations
+        time: time 
+            time library
+        random: 
+            random library
+
+        Returns
+        -------
+        None
+
+            Constructor
+        """
+        self.ry     = ry
+        self.math   = math
+        self.np     = np
+        self.time   = time
         self.random = random
         return
     
@@ -40,10 +61,6 @@ class Environment:
 
         # Start simulation engine
         self.simulation = self.config.simulation(self.ry.SimulatorEngine.physx, True)
-
-        # Add camera
-        self.simulation.addSensor("camera")
-        self.cameraFrame = self.config.frame("camera")
 
         # Create a goalie object
         self.goalie = Goalie(self.simulation, self.viewer, self.config, self.ry)
