@@ -110,7 +110,7 @@ class State:
         # To be adjusted as per the distance from the goalie
         self.thrower.throw_max_iterations = self.thrower.throw_max_iterations + ( 10 - self.thrower.math.floor(self.np.linalg.norm(direction)) )
         # Range between 0.6 and 0.75
-        self.thrower.throw_open_gripper_percentage = max (0.65, min (0.65 + (((1 - ((self.thrower.math.floor(self.np.linalg.norm(direction))) / 5)) * 0.2), 0.85 ))
+        self.thrower.throw_open_gripper_percentage = max (0.65, min (0.65 + (((1 - ((self.thrower.math.floor(self.np.linalg.norm(direction))) / 5)) * 0.2)), 0.85 ))
         print(self.thrower.throw_open_gripper_percentage)
         self.thrower.set_throw_objective(direction)
         return
