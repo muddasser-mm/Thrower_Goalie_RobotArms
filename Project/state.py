@@ -123,6 +123,8 @@ class State:
         plane_dir = [plane_dir[0], plane_dir[1]]
 
         traject = self.ball.get_trajectory_estimate([plane_pos[0], plane_pos[1], plane_dir[0], plane_dir[1]])
+        if traject is None:
+            return
         self.goalie.set_move_to_objective(traject)
         self.goalie.set_direction_objective(direction)
         return
@@ -164,7 +166,7 @@ class State:
 
         # Distance between ball and goalie pad
         dist_to_ball = self.np.linalg.norm(self.goalie.get_pad_position() - ball_pos)
-        print(dist_to_ball)
+        #print(dist_to_ball)
 
         # No change in direction when the ball is near
         if(dist_to_ball < 0.15):
@@ -284,8 +286,8 @@ class State:
             if options.get("change_thrower_position_smoothly") is not None:
                 if options.get("change_thrower_position_smoothly"):
                     self.thrower_move_step_size = 0.025
-            if options.get("initial_delay_time_steps") is not None:
-                self.delay_max_index = float(options.get("initial_delay_time_steps"))
+            if options.get("delay_time_steps") is not None:
+                self.delay_max_index = float(options.get("delay_time_steps"))
             if options.get("delay_only_once") is not None:
                 if not options.get("delay_only_once"):
                     self.delay_only_once = False

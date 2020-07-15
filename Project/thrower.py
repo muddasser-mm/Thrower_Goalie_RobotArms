@@ -29,8 +29,8 @@ class Thrower:
         return
 
     move_speed                              = 1.2
-    move_to_proximity_error                 = 1.5e-2
-    throw_preparation_movement_percentage   = 0.03
+    move_to_proximity_error                 = 7.5e-2
+    throw_preparation_movement              = 0.1
     throw_max_iterations                    = 20
     init_pose_max_iterations                = 20
     throw_open_gripper_percentage           = 0.7
@@ -191,13 +191,18 @@ class Thrower:
             self.config.setFrameState(komo.getConfiguration(0))
             newQ = self.config.getJointState()
 
-            if self.throw_initial_state is None:
-                self.throw_initial_state = newQ
-            elif self.throw_state == 1:
-                newQ = self.throw_initial_state
+            #if self.throw_initial_state is None:
+            #    self.throw_initial_state = newQ
+            #elif self.throw_state == 1:
+            #    newQ = self.throw_initial_state
 
             if self.throw_state == 1:
-                q = self.throw_preparation_movement_percentage * newQ + (1 - self.throw_preparation_movement_percentage) * oldQ
+                q_dir = newQ - oldQ
+                norm = self.np.linalg.norm(q_dir)
+                if norm > self.throw_preparation_movement:
+                    q_dir = q_dir / norm
+                    q_dir = self.throw_preparation_movement * q_dir
+                q = oldQ + q_dir
                 if self.np.linalg.norm(self.np.abs(oldQ - newQ)) < 1.5e-1:
                     self.throw_state = 2
             else:
