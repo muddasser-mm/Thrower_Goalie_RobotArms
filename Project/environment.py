@@ -74,7 +74,7 @@ class Environment:
         # Create a state object and populate the current state of each thrower in list states_index
         for thrower in self.throwers:
             ball = self.ball_management.get_ball("ball_" + str(thrower.identifier))
-            state = State(ball, thrower, self.goalie, self.np, self.random, self.tau)
+            state = State(ball, thrower, self.goalie, self.np, self.random, thrower_gui, self, self.tau)
             option = None
             if options is not None:
                 if options.get("Thrower" + str(thrower.identifier)) is not None:

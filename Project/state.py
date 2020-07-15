@@ -1,10 +1,12 @@
 class State:
-    def __init__(self, ball, thrower, goalie, np, random, tau):
+    def __init__(self, ball, thrower, goalie, np, random, gui, env, tau):
         self.ball = ball
         self.thrower = thrower
         self.goalie = goalie
         self.np = np
         self.random = random
+        self.gui = gui
+        self.env = env
         self.tau = tau
 
         self.direction_objective_flag = False
@@ -190,6 +192,16 @@ class State:
         self.thrower.simulation.setState(self.thrower.config.getFrameState())
         return
 
+    def update_thrower_position(self):
+        if self.thrower_position_method == "random":
+            x = self.random.uniform(0, 3)
+            y = self.random.uniform(-2.5, 2.5)
+            self.thrower_initial_position = [x, y]
+        elif self.thrower_position_method != "values":
+            posx, posy = self.gui(self.env, 0)
+            self.thrower_initial_position = [posx, posy]
+        return
+
 
     def is_delay_finished(self):
         if self.delay_index > self.delay_max_index:
@@ -241,6 +253,7 @@ class State:
     state_iterate       = "iterate"
     state_is_done       = "is_done"
 
+    thrower_position_method = None
     thrower_initial_position = []
     thrower_move_step_size = 1
     thrower_move_step_index = 0
@@ -250,15 +263,13 @@ class State:
     delay_only_once = True
 
     should_loop = False
-    reset_with_random_position = False
 
     def get_states(self, options=None):
         if options is not None:
-            if options.get("initial_position") is not None:
-                self.thrower_initial_position = options.get("initial_position")
-            if options.get("reset_with_random_position") is not None:
-                if options.get("reset_with_random_position"):
-                    self.reset_with_random_position = True
+            if options.get("get_thrower_position_using") is not None:
+                self.thrower_position_method = options.get("get_thrower_position_using")
+            if options.get("thrower_position_values") is not None:
+                self.thrower_initial_position = options.get("thrower_position_values")
             if options.get("change_thrower_position_smoothly") is not None:
                 if options.get("change_thrower_position_smoothly"):
                     self.thrower_move_step_size = 0.025
@@ -272,6 +283,12 @@ class State:
                     self.should_loop = True
 
         list_of_states = []
+        list_of_states.append({
+            self.state_name: "Update thrower position",
+            self.state_initialize: self.update_thrower_position,
+            self.state_iterate: self.do_nothing,
+            self.state_is_done: self.return_true
+        })
         if self.delay_max_index > 0:
             list_of_states.append({
                 self.state_name: "Waiting...",
@@ -333,14 +350,6 @@ class State:
 		    self.state_iterate: self.do_nothing,
 		    self.state_is_done: self.is_pose_reached
 		})
-        if self.should_loop:
-            if self.reset_with_random_position:
-                list_of_states.append({
-                    self.state_name: "Setting the thrower to a random position",
-                    self.state_initialize: self.reset_thrower_position_randomly,
-                    self.state_iterate: self.do_nothing,
-                    self.state_is_done: self.return_true
-                })
         if not self.should_loop:
             list_of_states.append({
                 self.state_name: "Done",
