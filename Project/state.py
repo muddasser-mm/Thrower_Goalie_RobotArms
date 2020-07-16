@@ -39,13 +39,50 @@ class State:
         return
 
     def do_nothing(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+
+            Empty function
+        """
+		
         return
 
     def delay_time_steps(self):
+		"""
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        delay_index: integer
+            Delay time step index
+
+            Delay function for next iteration
+        """
+		
         self.delay_index = self.delay_index + 1
         return
 
     def move_thrower_to_initial_position(self):
+		"""
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+
+            Move thrower to the initial position over the ball
+        """
+		
         total_steps = int(1. / self.thrower_move_step_size)
 
         fraction = total_steps - self.thrower_move_step_index
@@ -67,20 +104,64 @@ class State:
         return
 
     def thrower_move_to_ball(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+            First move towards the ball position
+        """
+		
         ball_position = self.ball.get_position()
         self.thrower.set_move_to_objective(ball_position, 0.5)
         return
 
     def thrower_move_above_the_ball(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+            Move thrower above the ball
+        """
+			
         ball_position = self.ball.get_position()
         self.thrower.set_move_to_objective([ball_position[0], ball_position[1], ball_position[2] + 0.2], 0.5)
         return
 
     def thrower_close_gripper(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+            Grab the ball
+        """
+
         self.thrower.set_grab_objective(True)
         return
 
     def thrower_move_opposite_the_goal(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+            Set the direction of throw
+        """
+
         # Appropriate parameter values for recoil position - Fixed values got from trial and testing
         distance_to_thrower = 0.6
         height = 0.35
@@ -101,6 +182,17 @@ class State:
         return
 
     def thrower_throw(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+            Initiate throw of the ball
+        """
+
         goalie_pos = self.goalie.get_position()
         goalie_pos[1] = goalie_pos[1] + self.thrower_initial_goal_position
         thrower_pos = self.thrower.get_position()
@@ -116,6 +208,17 @@ class State:
         return
 
     def thrower_gripper_open_position(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+            Calculate when to open th gripper for the throw, during the curl-out motion
+        """
+			
         if self.thrower.throw_state == 2:
             distance_to_goalie = 0.5
 
@@ -138,6 +241,17 @@ class State:
         return
 
     def goalie_stop_ball_algo1(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+            Trajectory calculation based ball intersection algorithm 
+        """     
+
         distance_to_goalie = 0.5
 
         goalie_pos = self.goalie.get_position()
@@ -158,6 +272,17 @@ class State:
         return
 
     def goalie_stop_ball_algo2(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+            Ball intersection algorithm based on positiona nd ball velocity only
+        """ 
+
         distance_from_goalie    = 0.75
         distance_to_goal        = 0.5
         goalie_pos = self.goalie.get_position()
@@ -194,6 +319,8 @@ class State:
 
         # Distance between ball and goalie pad
         dist_to_ball = self.np.linalg.norm(self.goalie.get_pad_position() - ball_pos)
+
+        # To debug
         #print(dist_to_ball)
 
         # No change in direction when the ball is near
@@ -206,10 +333,33 @@ class State:
         return
 
     def thrower_reset_pose(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+            Reset thrower to initial pose
+        """ 
+
         self.thrower.set_reset_pose_objective()
         return
 
     def reset_thrower_position_randomly(self):
+        """
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+
+            To reset the thrower position
+		"""
+			
         x = self.random.uniform(0, 3)
         y = self.random.uniform(-2.5, 2.5)
 
@@ -217,6 +367,18 @@ class State:
         return
 
     def reset_ball_position(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+		
+            Spawn ball at the new thrower position
+		"""
+		
         pos = self.thrower.get_position()
         self.ball.set_position([pos[0] + 0.5, pos[1], 0.1])
 
@@ -226,6 +388,17 @@ class State:
         return
 
     def update_thrower_position_and_goal(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        None
+            Update new thrower and goalee position
+        """ 
+			
         if self.thrower_position_method == "random":
             x = self.random.uniform(0, 3)
             y = self.random.uniform(-2.5, 2.5)
@@ -240,6 +413,19 @@ class State:
 
 
     def is_delay_finished(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        delay status: boolean
+            Delay status
+            
+			For multiple thrower, delay check
+        """ 
+			
         if self.delay_index > self.delay_max_index:
             if not self.delay_only_once:
                 self.delay_index = 0
@@ -247,6 +433,19 @@ class State:
         return False
 
     def thrower_was_moved(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        thrower status: boolean
+            Thrower status
+			
+            Handling the move of thrower to new position
+        """
+			
         total_steps = int(1. / self.thrower_move_step_size)
         if self.thrower_move_step_index + 1 >= total_steps:
             self.thrower_move_step_index = 0
@@ -254,15 +453,67 @@ class State:
         return False
 
     def thrower_is_move_done(self):
+        """
+        Parameters
+        ----------
+        None
+        
+        Returns
+        -------
+        thrower move objective flag: boolean
+            thrower move objective flag
+			
+           Has thrower reached new position
+        """
+			
         return self.thrower.is_move_to_objective_fulfilled()
 
     def thrower_is_grasping(self):
+        """
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        ball grasp flag: boolean
+            status of ball being grasped
+
+            Check if the ball has been grasped
+        """   
+		     
         return self.thrower.is_gripper_grasping()
 
     def thrower_is_not_grasping(self):
+        """
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        ball grasp flag: boolean
+            status of ball not being grasped
+
+            Check if the ball is not being grasped
+        """ 
+		       
         return not self.thrower.is_gripper_grasping()
 
     def goalie_is_ball_stopped(self):
+        """
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        ball status: boolean
+            FLag True if ball has stopped
+
+            Check if the ball has stopped to terminate the iteration
+        """
+		
         # If y co-ordinate of the ball is beyond the goal 
         if (self.ball.get_position()[1] > 5) or (self.ball.get_position()[1] < -5) or (self.ball.get_position()[0] < self.goalie.get_position()[0] - 0.3) or (self.ball.get_position()[0] > 5):
             return True
@@ -274,12 +525,47 @@ class State:
         return False
 
     def is_pose_reached(self):
+        """
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        pose reached flag: boolean
+            pose reached flag
+
+            Check if the pose is reached
+        """
+		
         return self.thrower.is_init_pose_reached()
 
     def return_false(self):
-        return False
+		"""
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        value: boolean
+            return False
+        """
+		
+		return False
 
     def return_true(self):
+		"""
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        value: boolean
+            return True
+        """
+			
         return True
 
     #####################################################
@@ -306,6 +592,17 @@ class State:
     #######################################################
 
     def get_states(self, options=None):
+	        """
+        Parameters
+        ----------
+        options: options to pass to the corresponding state fucntion call
+
+        Returns
+        -------
+        list_of_states : dicitonary
+            A dictionary containing the state machine calls and status
+        """
+		
         if options is not None:
             if options.get("get_thrower_position_using") is not None:
                 self.thrower_position_method = options.get("get_thrower_position_using")
