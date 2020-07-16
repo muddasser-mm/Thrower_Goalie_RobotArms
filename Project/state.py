@@ -54,7 +54,7 @@ class State:
         return
 
     def delay_time_steps(self):
-		"""
+        """
         Parameters
         ----------
         None
@@ -66,12 +66,12 @@ class State:
 
             Delay function for next iteration
         """
-		
+
         self.delay_index = self.delay_index + 1
         return
 
     def move_thrower_to_initial_position(self):
-		"""
+        """
         Parameters
         ----------
         None
@@ -555,7 +555,7 @@ class State:
 		return False
 
     def return_true(self):
-		"""
+        """
         Parameters
         ----------
         None
@@ -592,7 +592,7 @@ class State:
     #######################################################
 
     def get_states(self, options=None):
-	        """
+        """
         Parameters
         ----------
         options: options to pass to the corresponding state fucntion call
