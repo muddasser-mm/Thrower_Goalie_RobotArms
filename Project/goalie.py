@@ -1,5 +1,20 @@
 class Goalie:
     def __init__(self, simulation, viewer, config, ry):
+        """
+        Parameters
+        ----------
+        simulation:
+            The simulation environment
+        viewer:
+            The viewer of the configuration
+        config: libry.Config
+            The config that should be used for manipulating the 
+            simulation environment.
+        ry: libry
+            The libry module that was used for the config 
+            parameter.
+        """
+
         self.simulation = simulation
         self.viewer     = viewer
         self.config     = config
@@ -14,17 +29,43 @@ class Goalie:
     move_speed              = 1
 
     def get_position(self):
+        """
+        Returns
+        -------
+        array(x, y)
+            Returns a 2D point containing the x and y coordinates
+            of the goalies current position.
+        """
+
         pos = self.config.frame(self.robot_base_identifier).getPosition()
         return [pos[0], pos[1]]
 
     def get_pad_position(self):
+        """
+        Returns
+        -------
+        array(x, y, z)
+            Returns a 3D point containing the x, y and z coordinates
+            of the goalies paddle.
+        """
+
         pos = self.config.frame(self.paddle_identifier).getPosition()
         return pos
 
     def set_move_to_objective(self, position, move_speed = None):
+        """
+        Parameters
+        ----------
+        position: array(x, y, z)
+            An array containing the 3D point to wich the goalie should
+            move its paddle.
+        move_speed: float
+            A value describing how fast the goalie should move its 
+            paddle to the specified position.
+        """
+
         if move_speed is None:
             move_speed = self.move_speed        
-        #print("Goalie: set_move_to_objective")
         if position is None:
             self.move_to_objective = None
         elif len(position) != 3:
@@ -35,7 +76,14 @@ class Goalie:
         return
 
     def set_direction_objective(self, direction):
-        #print("Goalie: set_direction_objective")
+        """
+        Parameters
+        ----------
+        direction: array(x, y)
+            A 2D point containing the x and y coordinates of the
+            direction in which the goalie should point its paddle.
+        """
+
         if direction is None:
             self.direction_objective = None
         elif len(direction) != 2:
@@ -46,7 +94,20 @@ class Goalie:
         return
 
     def calculate_q_diff(self, tau):
-        #print("Goalie: calculate_q_diff")
+        """
+        Parameters
+        ----------
+        tau: float
+            The time step that is used for the next simulation
+            iteration.
+        Returns
+        -------
+        q
+            Depending of the objectives, this function will return
+            the q differences that when applied will fulfill the objectives
+            set with the setter functions.
+        """
+        
         oldQ = self.simulation.get_q()
 
         if self.move_to_objective is None and self.direction_objective is None:

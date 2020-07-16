@@ -1,5 +1,30 @@
 class Thrower:
     def __init__(self, simulation, viewer, config, ry, time, np, math, identifier):
+        """
+        Parameters
+        ----------
+        simulation:
+            The simulation environment
+        viewer:
+            The viewer of the configuration
+        config: libry.Config
+            The config that should be used for manipulating the 
+            simulation environment.
+        ry: libry
+            The libry module that was used for the config 
+            parameter.
+        time: time 
+            time library
+		np: numpy
+			numpy library for array math operations
+        math: math
+            The math library.
+        identifier: int
+            An integer that uniquely identifies the thrower.
+            This identifier should match the identifier set in the 
+            setup.g file.
+        """
+
         self.simulation = simulation
         self.viewer     = viewer
         self.config     = config
@@ -41,9 +66,26 @@ class Thrower:
     init_pose_count                         = 0
 
     def is_gripper_grasping(self):
+        """
+        Returns
+        -------
+        boolean
+            Returns true if the gripper is currently grasping
+            and false otherwise.
+        """
+
         return self.simulation.getGripperIsGrasping(self.gripper_identifier)
 
     def is_move_to_objective_fulfilled(self):
+        """
+        Returns
+        -------
+        boolean
+            Returns true if the move_to objective is fulfilled.
+            That is if the gripper center is close enough to the
+            move_to objective.
+        """
+
         if self.move_to_objective is None:
             return True
          # Check if objective has been achieved.
@@ -52,20 +94,52 @@ class Thrower:
         return error < self.move_to_proximity_error
 
     def is_init_pose_reached(self):
+        """
+        Returns
+        -------
+        boolean
+            Returns true if the init pose has been reached.
+        """
+
         return not self.init_pose_objective
 
     def get_position(self):
+        """
+        Returns
+        -------
+        array(x, y)
+            Returns a 2D point containing the x and y coordinates
+            of the throwers current position.
+        """
+
         pos = self.config.frame(self.robot_base_identifier).getPosition()
         return [pos[0], pos[1]]
 
     def set_position(self, position):
+        """
+        Parameters
+        ----------
+        position: array(x, y, z)
+            A 3D point to which the whole thrower should move.
+        """
+
         self.config.frame(self.robot_base_identifier).setPosition(position)
         return
 
     def set_move_to_objective(self, position, move_speed = None):
+        """
+        Parameters
+        ----------
+        position: array(x, y, z)
+            A 3D point containing the position to which thrower
+            should move its gripper.
+        move_speed: float
+            A value describing how fast the goalie should move its 
+            paddle to the specified position.
+        """
+
         if move_speed is None:
             move_speed = self.move_speed
-        #print("Thrower: set_move_to_objective")
         if position is None:
             self.move_to_objective = None
         elif len(position) != 3:
@@ -79,7 +153,14 @@ class Thrower:
         return
 
     def set_grab_objective(self, should_grab=False):
-        #print("Thrower: set_grab_objective")
+        """
+        Parameters
+        ----------
+        should_grab: boolean
+            A boolean specifying if the thrower should open
+            or close its gripper.
+        """
+
         if should_grab:
             self.grab_objective = True
         else:
@@ -89,15 +170,22 @@ class Thrower:
             self.throw_objective = None
         return
 
-    def set_throw_objective(self, position):
-        #print("Thrower: set_throw_objective")
-        if position == None:
+    def set_throw_objective(self, direction):
+        """
+        Parameters
+        ----------
+        direction: array(x, y)
+            A 2D point indicating in which direction
+            the thrower should throw the ball.
+        """
+
+        if direction == None:
             self.throw_objective = None
-        elif len(position) != 2:
-            print("Received position parameter with wrong length.")
+        elif len(direction) != 2:
+            print("Received direction parameter with wrong length.")
             self.throw_objective = None
         else:
-            self.throw_objective = [float(position[0]), float(position[1])]
+            self.throw_objective = [float(direction[0]), float(direction[1])]
             self.throw_state = 1
             self.throw_index = 0
             self.throw_initial_state = None
@@ -111,12 +199,24 @@ class Thrower:
         return
 
     def set_reset_pose_objective(self):
+        """
+        The init_pose objective is set when
+        this function is called.
+        """
+
         # Length of recorded trajectory path
         self.init_pose_count = len(self.throw_pose_path_trajectory)
         self.init_pose_objective = True
         return
 
     def rotate(self, vec, angle):
+        """
+        A helper function which rotates the given vector by 
+        angle amount counterclockwise arround the axis orthogonal 
+        to vec and [0, 0, 1]. This function is used for the throwing
+        motion.
+        """
+
         angle = angle * self.math.pi * 2
         height = self.math.sin(angle)
         scale = self.math.cos(angle)
@@ -124,10 +224,21 @@ class Thrower:
         return [xy[0], xy[1], height]
 
     def calculate_q_diff(self, tau):
-        #print("Thrower: calculate_q_diff")
+        """
+        Parameters
+        tau: float
+            The time step that is used for the next simulation
+            iteration.
+        Returns
+        -------
+        q
+            Depending of the objectives, this function will return
+            the q differences that when applied will fulfill the objectives
+            set with the setter functions.
+        """
+
         if self.throw_objective is not None:
             # Throw
-            #[y, J] = self.config.evalFeature(self.ry.FS.position, [self.gripper_center_identifier])
 
             oldQ = self.simulation.get_q()
 
@@ -137,9 +248,6 @@ class Thrower:
             direction = [-self.throw_objective[0], -self.throw_objective[1]]
             direction = direction / self.np.linalg.norm(direction)
             orthogonal = self.np.cross([direction[0], direction[1], 0], [0, 0, 1])
-
-            # For smooth q                       
-            #komo.add_qControlObjective(order=1, scale=1e0)
 
             # prevent collisions
             komo.addObjective([], self.ry.FS.accumulatedCollisions, [], self.ry.OT.ineq, [1e4])
@@ -154,9 +262,6 @@ class Thrower:
                     angle_2 = self.throw_initial_angle2
                     angle_4 = self.throw_initial_angle4
                     angle_6 = self.throw_initial_angle6
-
-                    # apply speed limits
-                    # komo.add_qControlObjective(order=1, scale=1./self.move_speed)
 
                     # link objectives
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link2_identifier], self.ry.OT.eq, [1e1], target=self.rotate(direction, -angle_2))
@@ -177,7 +282,6 @@ class Thrower:
                     if self.throw_index > self.math.floor(self.throw_open_gripper_percentage * self.throw_max_iterations):
                         # To keep gripper open, 
                         komo.addObjective([], self.ry.FS.qItself, [self.finger1_identifier], self.ry.OT.eq, scale=[1e1], order=1)
-                        
                 else:
                     self.throw_objective = None
 
