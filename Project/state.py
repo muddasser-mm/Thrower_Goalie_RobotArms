@@ -541,7 +541,7 @@ class State:
         return self.thrower.is_init_pose_reached()
 
     def return_false(self):
-		"""
+        """
         Parameters
         ----------
         None
@@ -551,8 +551,7 @@ class State:
         value: boolean
             return False
         """
-		
-		return False
+        return False
 
     def return_true(self):
         """
