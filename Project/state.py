@@ -116,7 +116,7 @@ class State:
         """
 		
         ball_position = self.ball.get_position()
-        self.thrower.set_move_to_objective(ball_position, 0.5)
+        self.thrower.set_move_to_objective(ball_position, 0.6)
         return
 
     def thrower_move_above_the_ball(self):
@@ -132,7 +132,7 @@ class State:
         """
 			
         ball_position = self.ball.get_position()
-        self.thrower.set_move_to_objective([ball_position[0], ball_position[1], ball_position[2] + 0.2], 0.5)
+        self.thrower.set_move_to_objective([ball_position[0], ball_position[1], ball_position[2] + 0.2], 0.6)
         return
 
     def thrower_close_gripper(self):
@@ -178,7 +178,7 @@ class State:
         pos = thrower_pos + (distance_to_thrower * direction)
         pos = [pos[0], pos[1], height]
 
-        self.thrower.set_move_to_objective(pos, 0.2)
+        self.thrower.set_move_to_objective(pos, 0.5)
         return
 
     def thrower_throw(self):
@@ -199,11 +199,19 @@ class State:
 
         direction = [goalie_pos[0] - thrower_pos[0], goalie_pos[1] - thrower_pos[1]]
 
-        # To be adjusted as per the distance from the goalie
-        self.thrower.throw_max_iterations = self.thrower.throw_max_iterations + ( 10 - self.thrower.math.floor(self.np.linalg.norm(direction)) )
-        # Range between 0.6 and 0.75
-        self.thrower.throw_open_gripper_percentage = max (0.65, min (0.65 + (((1 - ((self.thrower.math.floor(self.np.linalg.norm(direction))) / 5)) * 0.2)), 0.85 ))
-        print(self.thrower.throw_open_gripper_percentage)
+        # To be adjusted as per the distance from the goalie. Max throw between 18 to 26, where a smooth velcoty performance is seen at the thrower
+        self.thrower.throw_max_iterations = max (16, 28 - self.thrower.math.floor(self.np.linalg.norm(direction)))
+        
+        # Max distance in our thrower field
+        max_distance  = 6
+
+        # Range between 0.69 and 0.79. Quadratic relationship
+        mult_factor = (1/max_distance) * (self.np.linalg.norm(direction))    
+        self.thrower.throw_open_gripper_percentage = max (0.69, (0.79 - (mult_factor * mult_factor * 0.1) ))
+        
+        # To Debug
+        print(self.thrower.math.floor(self.np.linalg.norm(direction)), self.thrower.throw_max_iterations, self.thrower.throw_open_gripper_percentage)
+
         self.thrower.set_throw_objective(direction)
         return
 
@@ -515,7 +523,8 @@ class State:
         """
 		
         # If y co-ordinate of the ball is beyond the goal 
-        if (self.ball.get_position()[1] > 5) or (self.ball.get_position()[1] < -5) or (self.ball.get_position()[0] < self.goalie.get_position()[0] - 0.3) or (self.ball.get_position()[0] > 5):
+        if (self.ball.get_position()[1] > 5) or (self.ball.get_position()[1] < -5) or \
+            (self.ball.get_position()[0] < self.goalie.get_position()[0] - 0.3) or (self.ball.get_position()[0] > 5):
             return True
 
         # RMS values across all direction is less than 0.01, then ball asssumed to be stand-still

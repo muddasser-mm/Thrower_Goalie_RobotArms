@@ -31,7 +31,7 @@ class Thrower:
     move_speed                              = 1.2
     move_to_proximity_error                 = 7.5e-2
     throw_preparation_movement              = 0.1
-    throw_max_iterations                    = 20
+    throw_max_iterations                    = 25
     init_pose_max_iterations                = 20
     throw_open_gripper_percentage           = 0.7
     throw_initial_angle2                    = 0.35
@@ -174,11 +174,10 @@ class Thrower:
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link2_identifier], self.ry.OT.eq, [1e1], target=self.rotate(direction, -angle_2))
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link4_identifier], self.ry.OT.eq, [1e1], target=self.rotate(-direction, angle_4))
                     komo.addObjective([], self.ry.FS.vectorY, [self.robot_link6_identifier], self.ry.OT.eq, [1e1], target=self.rotate(direction, -angle_6))
-                    #komo.addObjective([], self.ry.FS.qItself, [self.robot_joint2_identifier, self.robot_joint4_identifier, self.robot_joint6_identifier], self.ry.OT.ineq, [1e1], target=[0.1, 0.1, 0.1], order=2)
-                    #komo.addObjective([], self.ry.FS.position, [self.gripper_center_identifier], self.ry.OT.sos, [1e0], target=15, order=1)
-
-                    #ang_vel = (self.config.evalFeature(self.ry.FS.angularVel, [self.gripper_center_identifier]))
-                    #print("Angular velocity of gripper is : ", ang_vel)
+                    if self.throw_index > self.math.floor(self.throw_open_gripper_percentage * self.throw_max_iterations):
+                        # To keep gripper open, 
+                        komo.addObjective([], self.ry.FS.qItself, [self.finger1_identifier], self.ry.OT.eq, scale=[1e1], order=1)
+                        
                 else:
                     self.throw_objective = None
 
@@ -192,11 +191,6 @@ class Thrower:
 
             self.config.setFrameState(komo.getConfiguration(0))
             newQ = self.config.getJointState()
-
-            #if self.throw_initial_state is None:
-            #    self.throw_initial_state = newQ
-            #elif self.throw_state == 1:
-            #    newQ = self.throw_initial_state
 
             if self.throw_state == 1:
                 q_dir = newQ - oldQ

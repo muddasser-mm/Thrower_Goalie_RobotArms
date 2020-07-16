@@ -169,7 +169,8 @@ class Ball:
         Parameters
         ----------
         plane: array(x, y, dir_x, dir_y)
-            An array with 4 elements. The first two elements are the x and y coordinates of some point on the plane. The third and the fourth element are the x and y are the x and y coordinates of the direction of the plane.
+            An array with 4 elements. The first two elements are the x and y coordinates of some point on the plane. 
+            The third and the fourth element are the x and y are the x and y coordinates of the direction of the plane.
         
         Returns
         -------

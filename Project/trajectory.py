@@ -5,7 +5,8 @@ def calculate_trajectory(ball, plane, math):
     ball: Ball
         The ball object for which the trajectory shall be calculated.
     plane: array(float)
-        An array with 4 elements. The first two elements are the x and y coordinates of some point on the plane. The third and the fourth element are the x and y are the x and y coordinates of the direction of the plane.
+        An array with 4 elements. The first two elements are the x and y coordinates of some point on the plane. 
+        The third and the fourth element are the x and y are the x and y coordinates of the direction of the plane.
     math: math
         The math library.
     
@@ -38,7 +39,8 @@ def calculate_trajectory(ball, plane, math):
         # Something went wrong. x should be > 0.
         return None
 
-    # Since we are disregarding air resistance and other forces (except the gravitational force) the velocity of the ball in the X and Y axies will never change.
+    # Since we are disregarding air resistance and other forces (except the gravitational force) the velocity of the ball in the X and Y axies 
+    # will never change.
     # We can therefore use 'x' to calculate the 3D point where the ball will hit the ground.
     zero_point = g * (x * x)
     zero_point = zero_point + (vel[2] * x)
@@ -48,8 +50,9 @@ def calculate_trajectory(ball, plane, math):
 
     if plane is None:
         # If no plane is provided we will return the point where the ball will hit the ground.
-        return [zero_point[0], zero_point[1], zero_point[2] + ball.get_radius()] # We add the balls radius again and therefore return the center point of the ball.
-
+        # We add the balls radius again and therefore return the center point of the ball.
+        return [zero_point[0], zero_point[1], zero_point[2] + ball.get_radius()] 
+        
     ####################
     # We will now compute the point where the ball will hit the plane.
 
