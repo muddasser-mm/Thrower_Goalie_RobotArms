@@ -35,6 +35,7 @@ class Environment:
         return
     
     # Total number of throwers
+    # MARK: Change this to [1, 2] for two throwers.
     thrower_identifiers = [1]
     tau                 = 0.01
     throwers            = []

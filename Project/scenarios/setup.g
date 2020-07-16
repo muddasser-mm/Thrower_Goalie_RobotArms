@@ -174,6 +174,7 @@ Include: 'panda_paddle.g'
 Prefix: "Thrower1_"
 Include: 'panda_moveGripper.g'
 
+#MARK: Uncomment this for two throwers.
 #Prefix: "Thrower2_"
 #Include: 'panda_moveGripper.g'
 
@@ -181,6 +182,7 @@ Prefix!
         
 Edit Goalee_panda_link0 (world) { Q:<t(-2.5 0 0) d(0 0 0 0)> }
 Edit Thrower1_panda_link0 (world)  { Q:<t( 2.6 0 0) d(0 0 0 1)> }
+#MARK: Uncomment this for two throwers.
 #Edit Thrower2_panda_link0 (world)  { Q:<t( 2.6 1 0) d(0 0 0 1)> }
 
 camera(world){
