@@ -9,9 +9,11 @@
 ## Introduction:
 The project topic is to build a scenario consisting of a Thrower and a Goalie robot arms. The thrower moves to the desired position and throws the ball while the task of the goalie is to intercept and block the incoming ball from making a goal. 
 
+<img src="Video/Intro.png" width="800"/>
+
 The scenario is simple and synonymous to a goalkeeper in hockey, football or imitation of a block by a defender in basketball. The scenario is executed in an in-house simulation environment called Robotic AI (RAI) [https://github.com/MarcToussaint/rai] which uses the NVIDIA based PhysX simulation engine. RAI implements inverse kinematics using k-order Markov Path Optimization (KOMO)). The mesh model of a standard panda arm is is used for the thrower and goalie. The thrower is equipped with a gripper and the goalie is equipped with a flat paddle to its last joint. A suitable region behind the goalie is demarcated (goal) which the robot should prevent the ball from entering. 
 
-The ball is thrown towards the goal by the thrower from random positions as set by the user. The trajectories are planned/directed towards random points on the goal plane and within the goal dimensions.The thrower and goalie have a field of view of 180 degrees in front of them. A ball is removed from simulation once it has stopped moving for a certain amount of duration. The balls are shot periodically with certain interval of time from different positions continuously, until the simulation end time is reached. The perception pipeline is skipped for the task implementation such that the current ball position is directly queried through the API available in the current RAI simulation environment for trajectory planning and ball intercept position calculations. 
+The ball is thrown towards the goal by the thrower from random positions as set by the user. The trajectories are planned/directed towards random points on the goal plane.The thrower and goalie have a field of view of 180 degrees in front of them. A ball is removed from simulation once it has stopped moving for a certain amount of duration. Perception pipeline for ball detection and position estimation can be integarted into the environment.
 
 This real time implementation of the setup has applications in crowd pulling, fun and entertainment activities. Also, it can be used for spot training in football, hockey or basketball practise and training. With a ring or cup shaped attachment it can also be extended for the game of throw and catch.
 
