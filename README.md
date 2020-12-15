@@ -42,7 +42,84 @@ You can now run the jupyter notebook in this folder.
 If you want more than one thrower in the simulation, you need to make some changes to the code.
 Please open the `../robotics_course/scenarios/setup.g` file and uncomment the lines which are marked with MARK. Also in the `../robotics_course/SOME_FOLDER/SOME_OTHER_FOLDER/environment.py` file you need to change the `thrower_identifiers` variable, which is also marked with MARK, to `[1, 2]`. If you want to have just one thrower again, just revert all these steps.
 
-## Options
+## Work Packages and File Structure
+The code can be structured into following work packages.
+
+### Work Package 1: Scene creation
+The scenario as shown in figure below. Robot arm modifications to include the paddle and gripper accordingly. Add a thrower, goalie, goal and set the field area in the simulation environment.
+
+Folder:
+
+    Project\textbackslash meshes - contains goal mesh.
+    
+    Project\textbackslash scenarios - contains the graph data structure and .g files for the thrower and goalie.
+    
+Files:
+
+    environment.py - main file for the project.
+    
+    state.py - state machine.
+
+<p align="center">
+<img src="https://github.com/muddasser27/Thrower_Goalie_RobotArms/blob/master/Video/Setting.png" />
+</p>
+
+### Work Package 2: Thrower Trajectory Planning
+A robot arm is used to throw balls at the target (as a ball cannon). Here, as a first step the robot arm is moved towards the ball, the ball is grasped, and lift is initiated. Inverse Kinematics is implemented using the standard RAI library functions. The force required is obtained by moving the robot arm to attain certain velocity and acceleration at the end effector and to open the gripper at the right moment to give it a desired trajectory. This setting is calibrated by trial and error and for desired minimal accuracy, as the ball does not need to hit the target at a specific point. Additional calibration to handle the ball slips from the robot gripper during the arm motion. 
+The trajectory direction is estimated by calculating the line intersection between the thrower and goalie 2D positions. Refer Figure \ref{fig:trajectory}. \\
+
+Files: In the folder 'Project'
+
+    trajectory.py - trajectory planning
+    
+    thrower.py - thrower functionality
+
+<p align="center">
+<img src="https://github.com/muddasser27/Thrower_Goalie_RobotArms/blob/master/Video/Trajectory.png" />
+</p>
+
+### Work Package 3: Ball Management
+There are two modules for ball management.
+At the thrower side it is used to keep track of the ball initiation and termination in the simulation environment. On the Goalie side it is used to calculate the trajectory and estimate the point of interception between the ball and the robot arm.
+
+Files: In the folder 'Project'
+
+    ballmanagement.py - Ball management
+
+### Work Package 4: Goalie and Ball position estimation
+Implemented robot manipulation using Inverse kinematics to implement a block. The position of the ball is estimated at every timestep of the simulation. The following two algorithms have been used and analysed (Refer Figure \ref{fig:trajectory}):
+Trajectory based estimation:
+    - Line intersection between the goal direction and the axis of the goal to get x and y co-ordinates of the intersection point.
+    - 1D projectile motion to estimate the height of intersection(z).
+Approximate estimation:
+    - Line intersection between the goal direction and the axis of the goal to get x and y co-ordinates of the intersection point.
+    - Track the height of the ball at every time step to get the height(z).
+
+Files: In the folder 'Project'
+
+    goalie.py - Goalie related functionality 
+
+### Work Package 5: GUI
+The GUI for setting the position of the thrower and position of the goal as shown in the figure below.
+
+<p align="center">
+<img src="https://github.com/muddasser27/Thrower_Goalie_RobotArms/blob/master/Video/GUI.gif" />
+</p>
+
+Files:In the folder 'Project'
+
+    gui.py - GUI related functionality
+
+### Work Package 6: Example Jupyter Notebooks
+A set of Jupyter Notebooks are added for the users to play around with the project. The Project.ipynb can be used as a starting point. The notebooks are self explanatory for the scenarios they demo.
+
+Setup with two arms:
+
+<p align="center">
+<img src="https://github.com/muddasser27/Thrower_Goalie_RobotArms/blob/master/Video/Two_Arms.gif" />
+</p>
+
+## Options to use in the provided Jupyter Notebooks
 You can change some options to adjust the behavior of the throwers and the goalie in the notebooks.
 Please refer to the provided Example notebooks for running the code.
 
@@ -57,71 +134,3 @@ For each thrower you can provide a dictionary with the following values:
 * `delay_only_once`: If set to `True` the delay from the `delay_time_steps` will be applied only once at the beginning of the simulation. If set to `False` the delay will be applied every time the thrower will start a new throw. This will only take effect if the `loop` field is set to `True`.
 * `algorithm`: If set to `1` the goalie will use the trajectory based estimation to block all balls from this thrower, if set to `2` the goalie will use the approximate estimation.
 * `loop`: If set to `True` the thrower will throw balls infinitely. If set to `False` the thrower will throw one ball and then stop.
-
-## Work Packages and File Structure
-The code can be structured into following work packages.
-
-### Work Package 1: Scene creation
-The scenario as shown in figure below. Robot arm modifications to include the paddle and gripper accordingly. Add a thrower, goalie, goal and set the field area in the simulation environment.
-
-Folder:
-    Project\textbackslash meshes - contains goal mesh.
-    Project\textbackslash scenarios - contains the graph data structure and .g files for the thrower and goalie.
-Files:
-    environment.py - main file for the project.
-    state.py - state machine.
-
-<p align="center">
-<img src="https://github.com/muddasser27/Thrower_Goalie_RobotArms/blob/master/Video/Setting.png" />
-</p>
-
-### Work Package 2: Thrower Trajectory Planning
-A robot arm is used to throw balls at the target (as a ball cannon). Here, as a first step the robot arm is moved towards the ball, the ball is grasped, and lift is initiated. Inverse Kinematics is implemented using the standard RAI library functions. The force required is obtained by moving the robot arm to attain certain velocity and acceleration at the end effector and to open the gripper at the right moment to give it a desired trajectory. This setting is calibrated by trial and error and for desired minimal accuracy, as the ball does not need to hit the target at a specific point. Additional calibration to handle the ball slips from the robot gripper during the arm motion. 
-The trajectory direction is estimated by calculating the line intersection between the thrower and goalie 2D positions. Refer Figure \ref{fig:trajectory}. \\
-
-Files: In the folder 'Project'
-    trajectory.py - trajectory planning
-    thrower.py - thrower functionality
-
-<p align="center">
-<img src="https://github.com/muddasser27/Thrower_Goalie_RobotArms/blob/master/Video/Trajectory.png" />
-</p>
-
-### Work Package 3: Ball Management
-There are two modules for ball management.
-At the thrower side it is used to keep track of the ball initiation and termination in the simulation environment. On the Goalie side it is used to calculate the trajectory and estimate the point of interception between the ball and the robot arm.
-
-Files: In the folder 'Project'
-    ballmanagement.py - Ball management
-
-### Work Package 4: Goalie and Ball position estimation
-Implemented robot manipulation using Inverse kinematics to implement a block. The position of the ball is estimated at every timestep of the simulation. The following two algorithms have been used and analysed (Refer Figure \ref{fig:trajectory}):
-Trajectory based estimation:
-    - Line intersection between the goal direction and the axis of the goal to get x and y co-ordinates of the intersection point.
-    - 1D projectile motion to estimate the height of intersection(z).
-Approximate estimation:
-    - Line intersection between the goal direction and the axis of the goal to get x and y co-ordinates of the intersection point.
-    - Track the height of the ball at every time step to get the height(z).
-
-Files: In the folder 'Project'
-    goalie.py - Goalie related functionality 
-
-### Work Package 5: GUI
-The GUI for setting the position of the thrower and position of the goal as shown in the figure below.
-
-<p align="center">
-<img src="https://github.com/muddasser27/Thrower_Goalie_RobotArms/blob/master/Video/GUI.gif" />
-</p>
-
-Files:In the folder 'Project'
-    gui.py - GUI related functionality
-
-### Work Package 6: Example Jupyter Notebooks
-A set of Jupyter Notebooks are added for the users to play around with the project. The Project.ipynb can be used as a starting point. The notebooks are self explanatory for the scenarios they demo.
-
-Setup with two arms:
-
-<p align="center">
-<img src="https://github.com/muddasser27/Thrower_Goalie_RobotArms/blob/master/Video/Two_Arms.gif" />
-</p>
-
