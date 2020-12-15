@@ -42,6 +42,22 @@ You can now run the jupyter notebook in this folder.
 If you want more than one thrower in the simulation, you need to make some changes to the code.
 Please open the `../robotics_course/scenarios/setup.g` file and uncomment the lines which are marked with MARK. Also in the `../robotics_course/SOME_FOLDER/SOME_OTHER_FOLDER/environment.py` file you need to change the `thrower_identifiers` variable, which is also marked with MARK, to `[1, 2]`. If you want to have just one thrower again, just revert all these steps.
 
+## Sample Jupyter Notebooks and Options to be used 
+You can change some options to adjust the behavior of the throwers and the goalie in the notebooks.
+Please refer to the provided Example notebooks for running the code.
+
+The `options` parameter is a dictionary containing dictionaries for each thrower in the simulation. The throwers are identified by `"Thrower" + str(thrower_identifier)`.
+
+For each thrower you can provide a dictionary with the following values:
+* `get_thrower_position_using`: If set to `"gui"` the simulation will show the gui and ask you to input the position to which the goalie should move and an offset for the goal position to which the thrower will throw the ball. If set to `"random"` these variables will be chosen randomly. If set to `"values"` the variables in the `thrower_position_values` and the `goal_intersection_y_value` will be used.
+* `thrower_position_values`: If set to `[x, y]`, where `x` and `y` are two floating point values, then the thrower will be moved to this position. This only takes effect if the `get_thrower_position_using` field is set to `values`.
+* `goal_intersection_y_value`: If set to any floating point values, then the thrower throw the ball onto the goal with the specified offset. This only takes effect if the `get_thrower_position_using` field is set to `values`.
+* `change_thrower_position_smoothly`: If set to `True` the thrower will be moved smoothly to its new position. If set to `False`the thrower will be moved to its new posiiton instantly.
+* `delay_time_steps`: If set to any integer larger than 0 the simulation will be delayed by that may time steps.
+* `delay_only_once`: If set to `True` the delay from the `delay_time_steps` will be applied only once at the beginning of the simulation. If set to `False` the delay will be applied every time the thrower will start a new throw. This will only take effect if the `loop` field is set to `True`.
+* `algorithm`: If set to `1` the goalie will use the trajectory based estimation to block all balls from this thrower, if set to `2` the goalie will use the approximate estimation.
+* `loop`: If set to `True` the thrower will throw balls infinitely. If set to `False` the thrower will throw one ball and then stop
+
 ## Work Packages and File Structure
 The code can be structured into following work packages.
 
@@ -118,19 +134,3 @@ Setup with two arms:
 <p align="center">
 <img src="https://github.com/muddasser27/Thrower_Goalie_RobotArms/blob/master/Video/Two_Arms.gif" />
 </p>
-
-## Options to use in the provided Jupyter Notebooks
-You can change some options to adjust the behavior of the throwers and the goalie in the notebooks.
-Please refer to the provided Example notebooks for running the code.
-
-The `options` parameter is a dictionary containing dictionaries for each thrower in the simulation. The throwers are identified by `"Thrower" + str(thrower_identifier)`.
-
-For each thrower you can provide a dictionary with the following values:
-* `get_thrower_position_using`: If set to `"gui"` the simulation will show the gui and ask you to input the position to which the goalie should move and an offset for the goal position to which the thrower will throw the ball. If set to `"random"` these variables will be chosen randomly. If set to `"values"` the variables in the `thrower_position_values` and the `goal_intersection_y_value` will be used.
-* `thrower_position_values`: If set to `[x, y]`, where `x` and `y` are two floating point values, then the thrower will be moved to this position. This only takes effect if the `get_thrower_position_using` field is set to `values`.
-* `goal_intersection_y_value`: If set to any floating point values, then the thrower throw the ball onto the goal with the specified offset. This only takes effect if the `get_thrower_position_using` field is set to `values`.
-* `change_thrower_position_smoothly`: If set to `True` the thrower will be moved smoothly to its new position. If set to `False`the thrower will be moved to its new posiiton instantly.
-* `delay_time_steps`: If set to any integer larger than 0 the simulation will be delayed by that may time steps.
-* `delay_only_once`: If set to `True` the delay from the `delay_time_steps` will be applied only once at the beginning of the simulation. If set to `False` the delay will be applied every time the thrower will start a new throw. This will only take effect if the `loop` field is set to `True`.
-* `algorithm`: If set to `1` the goalie will use the trajectory based estimation to block all balls from this thrower, if set to `2` the goalie will use the approximate estimation.
-* `loop`: If set to `True` the thrower will throw balls infinitely. If set to `False` the thrower will throw one ball and then stop.
